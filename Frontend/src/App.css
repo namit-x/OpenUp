@@ -5,6 +5,18 @@
     text-align: center;
 }
 
+* {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+}
+
+*::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+}
+
 .logo {
     height: 6em;
     padding: 1.5em;
@@ -43,4 +55,3 @@
 .read-the-docs {
     color: #888;
 }
-
