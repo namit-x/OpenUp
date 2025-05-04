@@ -73,6 +73,16 @@ export const TherapistSignUpForm: React.FC<TherapistSignUpFormProps> = ({ onBack
 
     setLoading(true);
 
+    // Create the final user object with all details
+    const therapistData = {
+      role: 'therapist',
+      ...formData,
+      timestamp: new Date().toISOString(),
+    };
+    
+    // Log the user data to the console
+    console.log("Therapist Sign Up Data:", therapistData);
+
     // Simulate API call
     setTimeout(() => {
       setLoading(false);

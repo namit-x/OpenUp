@@ -19,6 +19,13 @@ const SignUp = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // Log role selection to console
+  useEffect(() => {
+    if (selectedRole) {
+      console.log("User selected role:", selectedRole);
+    }
+  }, [selectedRole]);
+
   return (
     <div className="min-h-screen flex bg-[#111827] relative overflow-hidden">
       {/* Animated background elements */}

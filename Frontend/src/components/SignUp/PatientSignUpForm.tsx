@@ -79,6 +79,17 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
 
     setLoading(true);
 
+    // Create the final user object with all details
+    const patientData = {
+      role: 'patient',
+      ...formData,
+      dateOfBirth: date ? format(date, "yyyy-MM-dd") : null,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Log the user data to the console
+    console.log("Patient Sign Up Data:", patientData);
+
     // Simulate API call
     setTimeout(() => {
       setLoading(false);
