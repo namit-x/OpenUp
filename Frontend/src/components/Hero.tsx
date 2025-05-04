@@ -1,6 +1,6 @@
 const Hero = () => {
   return (
-    <div className="relative pt-32 pb-12 md:pb-24 lg:pb-24 px-4 overflow-y-hidden">
+    <div className="relative pt-32 pb-12 md:pb-24 lg:pb-14 px-4 overflow-y-hidden">
       {/* Animated background elements */}
       <div className="floating-circles">
         <div className="floating-circle bg-openup-teal animate-wave-motion" style={{ width: '300px', height: '300px', top: '10%', left: '5%', animationDelay: '0s' }}></div>
@@ -19,7 +19,7 @@ const Hero = () => {
           Get personalised professional care to fit your needs.
         </p>
 
-        <h2 className="text-xl md:text-2xl font-medium text-gray-200 mb-6 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+        <h2 className="text-xl md:text-2xl font-medium text-gray-200 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           What are you looking for?
         </h2>
       </div>

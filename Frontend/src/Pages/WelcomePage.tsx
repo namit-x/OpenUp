@@ -1,8 +1,11 @@
-import BackgroundAnimation from '../components/BackgroundAnimation';
+// import BackgroundAnimation from '../components/BackgroundAnimation';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import Services from '../components/Services';
 import { Toaster } from '../components/ui/toaster'
+import WhyOpenUp from '../components/WhyOpenUp';
+import Offerings from '../components/Offerings';
+import Footer from '../components/Footer';
 
 const WelcomePage = () => {
 
@@ -13,6 +16,9 @@ const WelcomePage = () => {
       <main>
         <Hero />
         <Services />
+        <WhyOpenUp />
+        <Offerings />
+        <Footer />
       </main>
       <Toaster />
     </div>
