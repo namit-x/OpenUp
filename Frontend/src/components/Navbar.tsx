@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Button} from '../components/ui/Button';
-import { Menu } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Button } from '../components/ui/Button';
+import { Menu, Phone } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -27,10 +28,9 @@ const Navbar = () => {
   };
 
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
-      }`}
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
+        }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex items-center justify-between">
@@ -40,35 +40,35 @@ const Navbar = () => {
                 OpenUp
               </span>
               <span className="ml-2 text-xs text-muted-foreground mt-2">
-                
+
               </span>
             </Link>
           </div>
-          
-          <div className={`flex gap-8 items-center space-x-1 ${isScrolled? "text-gray-900" :"text-gray-200" } `}>
+
+          <div className={`flex gap-8 items-center space-x-1 ${isScrolled ? "text-gray-900" : "text-gray-200"} `}>
             <a href="#about-us">ABOUT US</a>
             <a href="#services">SERVICES</a>
             <a href="#experts">EXPERTS</a>
-            <div className="ml-6 flex space-x-4">
-              <Button variant="ghost" size="sm" className="rounded-full  hover:bg-openup-mint/20 hover:text-primary">
+            <div className="ml-6 flex space-x-4 p-2">
+              <Button variant="ghost" size="sm" className="rounded-full">
                 <PhoneIcon />
               </Button>
-              <Button variant="ghost" size="sm" className="rounded-full  hover:bg-openup-mint/20 hover:text-primary">
+              <Button variant="ghost" size="sm" className="rounded-full">
                 <WhatsappIcon />
               </Button>
-              <Button variant="default" className="rounded-full">
-                SIGN IN
+              <Button variant="default" className="rounded-full border-2 hover:scale-105 transition-all duration-500" onClick={() => { navigate('signup') }}>
+                GET STARTED
               </Button>
             </div>
           </div>
-          
+
           <div className="md:hidden">
             <Button variant="ghost" size="icon" onClick={toggleMobileMenu}>
               <Menu className="h-6 w-6" />
             </Button>
           </div>
         </div>
-        
+
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 animate-fade-in">
             <div className="flex flex-col space-y-3">
@@ -82,8 +82,12 @@ const Navbar = () => {
                 <Button variant="ghost" size="sm" className="rounded-full">
                   <WhatsappIcon />
                 </Button>
-                <Button variant="default" className="bg-gradient-to-r from-openup-teal to-openup-mint hover:opacity-90 text-white rounded-full">
-                  SIGN IN
+                <Button
+                  variant="default"
+                  className="bg-gradient-to-r from-openup-teal to-openup-mint hover:opacity-90 text-white rounded-full"
+                  onClick={() => { navigate('/signup') }}
+                >
+                  SIGN UP
                 </Button>
               </div>
             </div>

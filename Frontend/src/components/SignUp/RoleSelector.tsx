@@ -57,7 +57,7 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelect }) => {
               }}
               transition={{ duration: 0.3 }}
             >
-              Patient? Sign In here-&#62;
+              Patient? Sign Up here-&#62;
             </motion.p>
           </div>
         </Button>
@@ -93,7 +93,7 @@ export const RoleSelector: React.FC<RoleSelectorProps> = ({ onSelect }) => {
               }}
               transition={{ duration: 0.3 }}
             >
-              Therapist? Sign In here-&#62;
+              Therapist? Sign Up here-&#62;
             </motion.p>
           </div>
         </Button>

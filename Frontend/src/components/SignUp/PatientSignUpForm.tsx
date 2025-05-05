@@ -127,13 +127,13 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
             value={formData.fullName}
             onChange={handleChange}
             className="bg-gray-800 border-gray-700 text-gray-200"
-            placeholder="Jane Doe"
+            placeholder="Karan Singh"
           />
           {errors.fullName && <p className="text-red-400 text-sm mt-1">{errors.fullName}</p>}
         </div>
 
         <div>
-          <Label htmlFor="email" className="text-gray-300">Email Address</Label>
+          <Label htmlFor="email" className="text-gray-300">Email Address <span className="text-gray-500">(optional)</span></Label>
           <Input
             id="email"
             name="email"
@@ -141,14 +141,14 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
             value={formData.email}
             onChange={handleChange}
             className="bg-gray-800 border-gray-700 text-gray-200"
-            placeholder="jane@example.com"
+            placeholder="mail@example.com"
           />
           {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
         </div>
 
         <div>
           <Label htmlFor="phone" className="text-gray-300">
-            Phone Number <span className="text-gray-500">(optional)</span>
+            Phone Number
           </Label>
           <Input
             id="phone"
@@ -157,8 +157,9 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
             value={formData.phone}
             onChange={handleChange}
             className="bg-gray-800 border-gray-700 text-gray-200"
-            placeholder="+1 (555) 123-4567"
+            placeholder="XXXXX XXXXX"
           />
+          {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
         </div>
 
         <div>
@@ -179,12 +180,10 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0 bg-gray-800 border-gray-700">
               <Calendar
-                mode="single"
                 selected={date}
                 onSelect={setDate}
-                initialFocus
                 className="pointer-events-auto"
-                disabled={(date) => date > new Date()}
+                disabled={(date: Date) => date > new Date()}
               />
             </PopoverContent>
           </Popover>
