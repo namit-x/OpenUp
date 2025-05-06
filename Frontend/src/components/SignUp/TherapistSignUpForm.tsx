@@ -89,6 +89,7 @@ export const TherapistSignUpForm: React.FC<TherapistSignUpFormProps> = ({ onBack
       toast({
         title: "Account created!",
         description: "Your therapist account has been created and is pending verification.",
+        className: "bg-white",
       });
       // In a real app, you would redirect to a verification page
     }, 1500);

@@ -36,6 +36,7 @@ interface loginData {
 }
 
 export const signup = async (req: Request, res: Response) => {
+  console.log("Request recieved");
   if (!req) {
     res.status(400).json({ message: "Request body not valid" });
     return;
@@ -45,9 +46,10 @@ export const signup = async (req: Request, res: Response) => {
 
   let validatedData = schema.parse(req.body);
   let exists = await User.findOne({ phone: validatedData.phone })
+  console.log("exists: ", exists);
 
   if (exists !== null) {
-    console.log("400 from customer column");
+    console.log("400 from patient column");
     res.status(400).json({ message: "Entry already exists." });
     return;
   }
@@ -55,6 +57,7 @@ export const signup = async (req: Request, res: Response) => {
     // Hash password before saving
     // await Customer.deleteMany({});
     validatedData.password = await argon2.hash(validatedData.password);
+    console.log("validated data: ", validatedData);
 
     let newUser = new User(validatedData);
     await newUser.save();

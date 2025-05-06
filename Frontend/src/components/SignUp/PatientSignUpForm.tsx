@@ -17,61 +17,64 @@ interface PatientSignUpFormProps {
   onBack: () => void;
 }
 
+interface PatientData {
+  role: 'patient';
+  fullName: string;
+  email: string;
+  phone: string;
+  password: string;
+  dateOfBirth: string | null;
+}
+
 export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) => {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [date, setDate] = React.useState<Date>();
+  const [date, setDate] = useState<Date>();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const createAccount = async (data: PatientData) => {
+    let res = await fetch('http://localhost:5000/signup', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data),
+    })
+    console.log("Request sent.");
+    let response = await res.json();
+    return response;
+  }
 
-    // Clear error when field is edited
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-  const validate = () => {
+    const form = new FormData(e.currentTarget);
+    const fullName = form.get("fullName")?.toString().trim() || "";
+    const email = form.get("email")?.toString().trim() || "";
+    const phone = form.get("phone")?.toString().trim() || "";
+    const password = form.get("password")?.toString() || "";
+    const confirmPassword = form.get("confirmPassword")?.toString() || "";
+
     const newErrors: Record<string, string> = {};
 
-    if (!formData.fullName) newErrors.fullName = 'Name is required';
-
-    if (!formData.email) {
+    if (!fullName) newErrors.fullName = 'Name is required';
+    if (!email) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = 'Email is invalid';
     }
-
-    if (!formData.password) {
+    if (!password) {
       newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
+    } else if (password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
     }
-
-    if (formData.password !== formData.confirmPassword) {
+    if (password !== confirmPassword) {
       newErrors.confirmPassword = 'Passwords do not match';
     }
-
     if (!date) {
       newErrors.dob = 'Date of birth is required';
     }
 
-    return newErrors;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -79,26 +82,31 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
 
     setLoading(true);
 
-    // Create the final user object with all details
-    const patientData = {
+    const patientData: PatientData = {
       role: 'patient',
-      ...formData,
+      fullName,
+      email,
+      phone,
+      password,
       dateOfBirth: date ? format(date, "yyyy-MM-dd") : null,
-      timestamp: new Date().toISOString(),
     };
 
-    // Log the user data to the console
-    console.log("Patient Sign Up Data:", patientData);
+    const created = await createAccount(patientData);
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Account created!",
-        description: "Your patient account has been successfully created.",
-      });
-      // In a real app, you would redirect to dashboard or verification page
-    }, 1500);
+    if (created.message === "Operation Successful") {
+      // Simulate API call
+      setTimeout(() => {
+        setLoading(false);
+        toast({
+          title: "Account created!",
+          description: "Your patient account has been successfully created.",
+          className: "bg-white text-black",
+        });
+      }, 1500);
+    }
+    else {
+      console.log("Something unexpected happened.");
+    }
   };
 
   return (
@@ -124,8 +132,6 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
           <Input
             id="fullName"
             name="fullName"
-            value={formData.fullName}
-            onChange={handleChange}
             className="bg-gray-800 border-gray-700 text-gray-200"
             placeholder="Karan Singh"
           />
@@ -138,8 +144,6 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
             id="email"
             name="email"
             type="email"
-            value={formData.email}
-            onChange={handleChange}
             className="bg-gray-800 border-gray-700 text-gray-200"
             placeholder="mail@example.com"
           />
@@ -147,15 +151,11 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
         </div>
 
         <div>
-          <Label htmlFor="phone" className="text-gray-300">
-            Phone Number
-          </Label>
+          <Label htmlFor="phone" className="text-gray-300">Phone Number</Label>
           <Input
             id="phone"
             name="phone"
             type="tel"
-            value={formData.phone}
-            onChange={handleChange}
             className="bg-gray-800 border-gray-700 text-gray-200"
             placeholder="XXXXX XXXXX"
           />
@@ -196,8 +196,6 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
             id="password"
             name="password"
             type="password"
-            value={formData.password}
-            onChange={handleChange}
             className="bg-gray-800 border-gray-700 text-gray-200"
           />
           {errors.password && <p className="text-red-400 text-sm mt-1">{errors.password}</p>}
@@ -209,8 +207,6 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
             id="confirmPassword"
             name="confirmPassword"
             type="password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
             className="bg-gray-800 border-gray-700 text-gray-200"
           />
           {errors.confirmPassword && <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>}
