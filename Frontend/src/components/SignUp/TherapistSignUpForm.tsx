@@ -1,13 +1,30 @@
+
 import React, { useState } from 'react';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
-import { useToast } from '../../hooks/use-toast';
+import { useToast } from "../../hooks/use-toast";
+import { z } from "zod";
 
 interface TherapistSignUpFormProps {
   onBack: () => void;
 }
+
+// Define the therapist signup schema
+const therapistSignupSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  phone: z.string().min(10, "Mobile number must be at least 10 digits"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  licenseNumber: z.string().min(1, "License number is required"),
+  specializations: z.array(z.string()).min(1, "At least one specialization is required"),
+  experienceYears: z.number().min(0, "Experience must be a positive number"),
+  languages: z.array(z.string()).min(1, "At least one language is required"),
+  email: z.string().email("Invalid email").optional(),
+  profilePicUrl: z.string().url("Invalid URL").optional(),
+  gender: z.string().optional(),
+  role: z.literal("therapist"),
+});
 
 export const TherapistSignUpForm: React.FC<TherapistSignUpFormProps> = ({ onBack }) => {
   const [formData, setFormData] = useState({
@@ -17,6 +34,12 @@ export const TherapistSignUpForm: React.FC<TherapistSignUpFormProps> = ({ onBack
     password: '',
     confirmPassword: '',
     licenseNumber: '',
+    specializations: ['CBT'], // Default value
+    experienceYears: 0,
+    languages: ['English'], // Default value
+    gender: '',
+    profilePicUrl: '',
+    role: 'therapist' as const,
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -25,74 +48,63 @@ export const TherapistSignUpForm: React.FC<TherapistSignUpFormProps> = ({ onBack
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-
-    // Clear error when field is edited
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
-  };
-
-  const validate = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.fullName) newErrors.fullName = 'Name is required';
-
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
-
-    if (!formData.phone) newErrors.phone = 'Phone number is required';
-
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    }
-
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-
-    if (!formData.licenseNumber) {
-      newErrors.licenseNumber = 'License number is required';
-    }
-
-    return newErrors;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const newErrors = validate();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
+    
+    // Password confirmation check (not in schema)
+    if (formData.password !== formData.confirmPassword) {
+      setErrors({ confirmPassword: 'Passwords do not match' });
       return;
     }
-
-    setLoading(true);
-
-    // Create the final user object with all details
-    const therapistData = {
-      role: 'therapist',
-      ...formData,
-      timestamp: new Date().toISOString(),
-    };
     
-    // Log the user data to the console
-    console.log("Therapist Sign Up Data:", therapistData);
+    try {
+      // Validate the form data against the schema
+      const validatedData = therapistSignupSchema.parse(formData);
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      toast({
-        title: "Account created!",
-        description: "Your therapist account has been created and is pending verification.",
-        className: "bg-white",
-      });
-      // In a real app, you would redirect to a verification page
-    }, 1500);
+      console.log(formData);
+      // Clear any previous errors
+      setErrors({});
+      setLoading(true);
+
+      // Create the final user object with all details
+      const therapistData = {
+        ...validatedData,
+      };
+
+      // Log the user data to the console
+      console.log("Therapist Sign Up Data:", therapistData);
+
+      // Simulate API call
+      setTimeout(() => {
+        setLoading(false);
+        toast({
+          title: "Account created!",
+          description: "Your therapist account has been created and is pending verification.",
+        });
+        // In a real app, you would redirect to a verification page
+      }, 1500);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        // Convert Zod errors to a format our form can use
+        const formattedErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path.length > 0) {
+            formattedErrors[err.path[0]] = err.message;
+          }
+        });
+        setErrors(formattedErrors);
+      } else {
+        // Handle unexpected errors
+        console.error("Form validation error:", error);
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred. Please try again.",
+          variant: "destructive"
+        });
+      }
+    }
   };
 
   return (

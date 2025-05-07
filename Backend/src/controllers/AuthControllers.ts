@@ -3,6 +3,9 @@ import User from "../models/User";
 import argon2 from 'argon2';
 import { patientSignupSchema, therapistSignupSchema } from "../validators/SignupSchema";
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export interface IPatientSignup {
   fullName: string;
@@ -30,9 +33,9 @@ export interface ITherapistSignup {
 }
 
 interface loginData {
+  role: string,
   password: string,
   phone: string,
-  role: string,
 }
 
 export const signup = async (req: Request, res: Response) => {
@@ -54,8 +57,7 @@ export const signup = async (req: Request, res: Response) => {
     return;
   }
   else {
-    // Hash password before saving
-    // await Customer.deleteMany({});
+
     validatedData.password = await argon2.hash(validatedData.password);
     console.log("validated data: ", validatedData);
 
@@ -71,7 +73,8 @@ export const login = async (req: Request, res: Response) => {
   const data: loginData = req.body;
   console.log("Data received: ", data);
 
-  let exists = await User.findOne({ phone: data.phone, role: data.role }).exec();
+  let exists = await User.findOne({ phone: data.phone}).exec();
+  // console.log("")
 
   if (exists === null) {
     console.log(`Account doesn't exists: ${exists}`);
@@ -80,18 +83,19 @@ export const login = async (req: Request, res: Response) => {
     });
   }
   else {
-    const isMatch: Boolean = await argon2.verify(data.password, exists.password);
+    const isMatch: Boolean = await argon2.verify(exists.password, data.password);
+    console.log("Password matched? ", isMatch);
 
     if (isMatch) {
       const payload = {
-        phone: data.phone,
-        role: data.role,
+        phone: exists.phone,
+        name: exists.fullName,
       }
       const secretKey = process.env.Secret_Key as string;
       const token = jwt.sign(payload, secretKey, { expiresIn: "15D" });
 
       res.cookie('AuthToken', token, {
-        httpOnly: false,
+        httpOnly: true,
         secure: false,
         maxAge: 15 * 24 * 60 * 60 * 1000,
         sameSite: "strict",

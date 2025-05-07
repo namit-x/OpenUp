@@ -15,21 +15,14 @@ const SignUp = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoadingComplete(true);
-    }, 1000);
+    }, 700);
     return () => clearTimeout(timer);
   }, []);
-
-  // Log role selection to console
-  useEffect(() => {
-    if (selectedRole) {
-      console.log("User selected role:", selectedRole);
-    }
-  }, [selectedRole]);
 
   return (
     <div className="min-h-screen flex bg-[#111827] relative overflow-hidden">
       {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full bg-teal-900/20 blur-[100px]"
           animate={{
@@ -143,7 +136,7 @@ const SignUp = () => {
                 >
                   <p className="text-sm text-white">
                     Already have an account?{' '}
-                    <Link to="/" className="text-teal-400 hover:text-teal-300 font-medium relative group">
+                    <Link to="/signin" className="text-teal-400 hover:text-teal-300 font-medium relative group">
                       Sign in
                       <span className="absolute -bottom-1 left-0 w-0 h-px bg-teal-400 transition-all duration-300 group-hover:w-full"></span>
                     </Link>

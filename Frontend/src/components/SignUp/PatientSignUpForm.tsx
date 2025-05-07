@@ -11,6 +11,7 @@ import {
 } from '../ui/popover';
 import { CalendarIcon, ArrowLeft, ChevronRight } from 'lucide-react';
 import { cn } from '../../lib/utils';
+import { useNavigate } from 'react-router';
 import { useToast } from "../../hooks/use-toast";
 
 interface PatientSignUpFormProps {
@@ -31,16 +32,17 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const createAccount = async (data: PatientData) => {
     let res = await fetch('http://localhost:5000/signup', {
       method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify(data),
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(data),
     })
-    console.log("Request sent.");
     let response = await res.json();
     return response;
   }
@@ -94,18 +96,22 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
     const created = await createAccount(patientData);
 
     if (created.message === "Operation Successful") {
-      // Simulate API call
-      setTimeout(() => {
-        setLoading(false);
-        toast({
-          title: "Account created!",
-          description: "Your patient account has been successfully created.",
-          className: "bg-white text-black",
-        });
-      }, 1500);
+      setLoading(false);
+      toast({
+        title: "Account created!",
+        description: "Your patient account has been successfully created.",
+        className: "bg-white text-black",
+      });
+      navigate('/patientHome');
     }
     else {
       console.log("Something unexpected happened.");
+      setLoading(false);
+      toast({
+        title: "Account already exist.",
+        description: "Try sign up with another phone number",
+        className: "bg-red-500 text-white",
+      })
     }
   };
 
