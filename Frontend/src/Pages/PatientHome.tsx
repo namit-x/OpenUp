@@ -9,8 +9,8 @@ const PatientHome = () => {
   const therapists = [
     {
       id: 1,
-      name: "Ana",
-      image: "/lovable-uploads/effbce5e-5c69-4dbb-83ab-ca093d1a4f3e.png",
+      name: "Anamika",
+      image: "/Doc1.png",
       experience: "2+ years of experience",
       price: "₹1500 for 50 mins",
       expertise: ["Anxiety disorders", "Depressive disorders"],
@@ -20,8 +20,8 @@ const PatientHome = () => {
     },
     {
       id: 2,
-      name: "Anx",
-      image: "/lovable-uploads/effbce5e-5c69-4dbb-83ab-ca093d1a4f3e.png",
+      name: "Aman",
+      image: "/Doc2.png",
       experience: "3+ years of experience",
       price: "₹1700 for 50 mins",
       expertise: ["Anxiety disorders", "Depressive disorders"],
@@ -31,8 +31,8 @@ const PatientHome = () => {
     },
     {
       id: 3,
-      name: "Arpit",
-      image: "/lovable-uploads/effbce5e-5c69-4dbb-83ab-ca093d1a4f3e.png",
+      name: "Ananya",
+      image: "/Doc3.png",
       experience: "3+ years of experience",
       price: "₹1600 for 50 mins",
       expertise: ["Family therapy", "Relationship counseling"],
@@ -43,7 +43,7 @@ const PatientHome = () => {
     {
       id: 4,
       name: "Namit",
-      image: "/lovable-uploads/effbce5e-5c69-4dbb-83ab-ca093d1a4f3e.png",
+      image: "/Doc4.png",
       experience: "7+ years of experience",
       price: "₹2200 for 50 mins",
       expertise: ["Trauma", "PTSD", "Anxiety disorders"],

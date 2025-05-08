@@ -7,7 +7,6 @@ import { details } from './controllers/DetailsController';
 import { verifyToken } from './controllers/AuthMiddleware';
 import cookieParser from 'cookie-parser';
 
-// Load environment variables from a .env file
 dotenv.config();
 connectDB();
 

@@ -39,7 +39,6 @@ interface loginData {
 }
 
 export const signup = async (req: Request, res: Response) => {
-  console.log("Request recieved");
   if (!req) {
     res.status(400).json({ message: "Request body not valid" });
     return;

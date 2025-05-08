@@ -22,6 +22,7 @@ const Navbar = () => {
       let response = await res.json();
       setToken(response);
     }
+    // console.log("token: ", token==null);
 
     verify();
   }, [])
@@ -76,7 +77,8 @@ const Navbar = () => {
                 <WhatsappIcon />
               </Button>
               <Button variant="default" className="rounded-full border-2 hover:scale-105 transition-all duration-500" onClick={() => { navigate('/signup') }}>
-                {token? `${token?.name}` : 'Get Started'}
+                {token?.name==undefined ? 'Get Started' : `${token?.name}`}
+                {/* Get Started */}
               </Button>
             </div>
           </div>

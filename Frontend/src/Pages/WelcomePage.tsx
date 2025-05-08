@@ -1,4 +1,3 @@
-// import BackgroundAnimation from '../components/BackgroundAnimation';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import Services from '../components/Services';

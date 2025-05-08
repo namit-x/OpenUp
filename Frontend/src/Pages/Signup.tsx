@@ -15,7 +15,7 @@ const SignUp = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoadingComplete(true);
-    }, 700);
+    }, 200);
     return () => clearTimeout(timer);
   }, []);
 
