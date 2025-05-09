@@ -35,6 +35,7 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
   const navigate = useNavigate();
 
   const createAccount = async (data: PatientData) => {
+    console.log("data: ", data);
     let res = await fetch('http://localhost:5000/signup', {
       method: 'POST',
       credentials: 'include',
@@ -96,13 +97,13 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
     const created = await createAccount(patientData);
 
     if (created.message === "Operation Successful") {
-      setLoading(false);
+      // setLoading(false);
       toast({
         title: "Account created!",
         description: "Your patient account has been successfully created.",
         className: "bg-white text-black",
       });
-      navigate('/patientHome');
+      navigate('/signin');
     }
     else {
       console.log("Something unexpected happened.");

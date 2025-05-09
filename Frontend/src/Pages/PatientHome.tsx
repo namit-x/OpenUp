@@ -1,11 +1,50 @@
-// import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import TherapistListing from "../components/TherapistListing";
 import { Button } from "../components/ui/Button";
-import { Calendar, Filter } from "lucide-react";
+import { Filter } from "lucide-react";
+
+interface Therapist {
+  _id: string;
+  fullName: string;
+  phone: string;
+  email: string;
+  password: string;
+  gender: string;
+  isVerified: boolean;
+  experienceYears: number;
+  licenseNumber: string;
+  profilePicUrl: string;
+  role: string;
+  price: string;
+  nextSlot: string;
+  specializations: string[];
+  availableVia: string[];
+  languages: string[];
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  __v: number;
+}
+
 
 const PatientHome = () => {
+  const [therapistData, setTherapistData] = useState<Therapist[]>([]);
+
+  useEffect(() => {
+
+    const fetchTherapists = async () => {
+      let res = await fetch('http://localhost:5000/therapistData', {method: 'POST'});
+      let response = await res.json();
+      let arr = Object.values(response.fetchedData) as Therapist[];
+      console.log(arr);
+      setTherapistData(arr);
+    }
+
+    fetchTherapists();
+  }, [])
+  
+
   const therapists = [
     {
       id: 1,
@@ -76,8 +115,9 @@ const PatientHome = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {therapists.map((therapist) => (
-              <TherapistListing key={therapist.id} therapist={therapist} />
+            {/* {therapistData?} */}
+            {therapistData.map((therapist: Therapist) => (
+              <TherapistListing key={therapist.phone} therapist={therapistData} />
             ))}
           </div>
         </div>

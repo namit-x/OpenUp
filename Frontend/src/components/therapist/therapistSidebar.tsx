@@ -19,6 +19,7 @@ import {
 } from "../ui/sidebar";
 
 import { useIsMobile } from "../../hooks/use-mobile";
+import { useNavigate } from "react-router";
 
 // Define sidebar navigation items
 const sidebarItems = [
@@ -32,11 +33,15 @@ const sidebarItems = [
 
 const TherapistSidebar = () => {
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   return (
     <Sidebar className="border-gray-700">
       <SidebarHeader className="py-4 px-4 md:py-6 md:px-4 border-b border-gray-700 flex items-center justify-between">
-        <h1 className="text-lg md:text-xl font-bold bg-gradient-to-r from-teal-400 to-sky-400 bg-clip-text text-transparent">
+        <h1
+        className="text-lg md:text-xl font-bold bg-gradient-to-r from-teal-400 to-sky-400 bg-clip-text text-transparent hover:cursor-pointer"
+        onClick={()=>{navigate('/')}}
+        >
           OpenUp Portal
         </h1>
         {isMobile && (
@@ -59,8 +64,9 @@ const TherapistSidebar = () => {
       
       <SidebarFooter className="border-t border-gray-700 py-3 px-4 md:py-4 md:px-6">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-teal-400/20 flex items-center justify-center">
-            <span className="text-teal-400 font-medium">RS</span>
+          <div className="w-12 h-12 rounded-full bg-teal-400/20 flex items-center justify-center">
+            {/* <span className="text-teal-400 font-medium">RS</span> */}
+            <img src="/Doc1.png" alt="RS" className="w-12 h-12 rounded-full object-cover" />
           </div>
           <div>
             <p className="text-sm">Dr. Rhea Sharma</p>

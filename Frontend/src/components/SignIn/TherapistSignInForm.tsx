@@ -69,10 +69,10 @@ export const TherapistSignInForm: React.FC<TherapistSignInFormProps> = ({ onBack
       setLoading(false);
       toast({
         title: "Welcome!",
-        description: "Patient Logged in successfully.",
+        description: "Therapist Logged in successfully.",
         className: "bg-white text-black",
       });
-      navigate('/patientHome');
+      navigate('/therapistHome');
     }
 
     setLoading(false);

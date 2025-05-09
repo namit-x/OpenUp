@@ -1,4 +1,3 @@
-import React from "react";
 import { Calendar } from "../ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Calendar as CalendarIcon } from "lucide-react";
