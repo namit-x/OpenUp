@@ -10,6 +10,7 @@ const TherapistHomepage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const isMobile = useIsMobile();
 
+
   return (
     <>
       <SidebarProvider defaultOpen={!isMobile}>

@@ -1,100 +1,84 @@
-import { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import TherapistListing from "../components/TherapistListing";
 import { Button } from "../components/ui/Button";
 import { Filter } from "lucide-react";
+import { useQuery } from "@apollo/client";
+import { GET_THERAPISTS } from "../graphql/queries";
+import TherapistSkeleton from "../components/ui/therapistSkeltonCards";
+
 
 interface Therapist {
-  _id: string;
-  fullName: string;
-  phone: string;
-  email: string;
-  password: string;
-  gender: string;
-  isVerified: boolean;
-  experienceYears: number;
-  licenseNumber: string;
-  profilePicUrl: string;
-  role: string;
+  id: string;
+  name: string;
+  profilePic: string;
+  experience: string;
   price: string;
-  nextSlot: string;
   specializations: string[];
-  availableVia: string[];
   languages: string[];
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
-  __v: number;
-}
-
+  availableVia: string[];
+  nextSlot: string;
+};
 
 const PatientHome = () => {
-  const [therapistData, setTherapistData] = useState<Therapist[]>([]);
-
-  useEffect(() => {
-
-    const fetchTherapists = async () => {
-      let res = await fetch('http://localhost:5000/therapistData', {method: 'POST'});
-      let response = await res.json();
-      let arr = Object.values(response.fetchedData) as Therapist[];
-      console.log(arr);
-      setTherapistData(arr);
+  const { data, loading, error } = useQuery(GET_THERAPISTS, {
+    variables: {
+      role: "therapist",
     }
+  });
+  console.log({ data, loading, error });
 
-    fetchTherapists();
-  }, [])
-  
 
-  const therapists = [
-    {
-      id: 1,
-      name: "Anamika",
-      image: "/Doc1.png",
-      experience: "2+ years of experience",
-      price: "₹1500 for 50 mins",
-      expertise: ["Anxiety disorders", "Depressive disorders"],
-      languages: ["English", "Hindi"],
-      availableVia: ["Video", "Voice"],
-      nextSlot: "Today, 05:00 PM"
-    },
-    {
-      id: 2,
-      name: "Aman",
-      image: "/Doc2.png",
-      experience: "3+ years of experience",
-      price: "₹1700 for 50 mins",
-      expertise: ["Anxiety disorders", "Depressive disorders"],
-      languages: ["English", "Hindi"],
-      availableVia: ["Video", "Voice"],
-      nextSlot: "Today, 04:30 PM"
-    },
-    {
-      id: 3,
-      name: "Ananya",
-      image: "/Doc3.png",
-      experience: "3+ years of experience",
-      price: "₹1600 for 50 mins",
-      expertise: ["Family therapy", "Relationship counseling"],
-      languages: ["English", "Hindi", "Bengali"],
-      availableVia: ["Video", "Voice"],
-      nextSlot: "Today, 06:15 PM"
-    },
-    {
-      id: 4,
-      name: "Namit",
-      image: "/Doc4.png",
-      experience: "7+ years of experience",
-      price: "₹2200 for 50 mins",
-      expertise: ["Trauma", "PTSD", "Anxiety disorders"],
-      languages: ["English", "Hindi", "Bengali"],
-      availableVia: ["Video", "Voice"],
-      nextSlot: "Tomorrow, 10:30 AM"
-    }
-  ];
+  // const therapists = [
+  //   {
+  //     id: 1,
+  //     name: "Anamika",
+  //     profilePic: "/Doc1.png",
+  //     experience: "2+ years of experience",
+  //     price: "₹1500 for 50 mins",
+  //     specialization: ["Anxiety disorders", "Depressive disorders"],
+  //     languages: ["English", "Hindi"],
+  //     availableVia: ["Video", "Voice"],
+  //     nextSlot: "Today, 05:00 PM"
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Aman",
+  //     profilePic: "/Doc2.png",
+  //     experience: "3+ years of experience",
+  //     price: "₹1700 for 50 mins",
+  //     specialization: ["Anxiety disorders", "Depressive disorders"],
+  //     languages: ["English", "Hindi"],
+  //     availableVia: ["Video", "Voice"],
+  //     nextSlot: "Today, 04:30 PM"
+  //   },
+  //   {
+  //     id: 3,
+  //     name: "Ananya",
+  //     profilePic: "/Doc3.png",
+  //     experience: "3+ years of experience",
+  //     price: "₹1600 for 50 mins",
+  //     specialization: ["Family therapy", "Relationship counseling"],
+  //     languages: ["English", "Hindi", "Bengali"],
+  //     availableVia: ["Video", "Voice"],
+  //     nextSlot: "Today, 06:15 PM"
+  //   },
+  //   {
+  //     id: 4,
+  //     name: "Namit",
+  //     profilePic: "/Doc4.png",
+  //     experience: "7+ years of experience",
+  //     price: "₹2200 for 50 mins",
+  //     specialization: ["Trauma", "PTSD", "Anxiety disorders"],
+  //     languages: ["English", "Hindi", "Bengali"],
+  //     availableVia: ["Video", "Voice"],
+  //     nextSlot: "Tomorrow, 10:30 AM"
+  //   }
+  // ];
 
   return (
     <div className="bg-slate-900">
-    <Navbar />
+      <Navbar />
       <div className="min-h-screen bg-[#111827] py-6 px-4 sm:px-6 lg:px-8 mb-24">
         <div className="max-w-7xl mx-auto mt-24">
           <div className="mb-8 flex justify-between items-center flex-wrap gap-4">
@@ -115,10 +99,15 @@ const PatientHome = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* {therapistData?} */}
-            {therapistData.map((therapist: Therapist) => (
-              <TherapistListing key={therapist.phone} therapist={therapistData} />
-            ))}
+            {loading ? (
+              Array.from({ length: 4 }).map((_, index: number) => (
+                <TherapistSkeleton key={index} />
+              ))
+            ) : (
+              data?.getTherapists?.map((therapist: Therapist) => (
+                <TherapistListing key={therapist.id} therapist={therapist} />
+              ))
+            )}
           </div>
         </div>
       </div>

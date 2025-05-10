@@ -4,12 +4,12 @@ import { Calendar, Mic, Video } from "lucide-react";
 
 interface TherapistProps {
   therapist: {
-    id: number;
+    id: string;
     name: string;
-    image: string;
+    profilePic: string;
     experience: string;
     price: string;
-    expertise: string[];
+    specializations: string[];
     languages: string[];
     availableVia: string[];
     nextSlot: string;
@@ -28,7 +28,7 @@ const TherapistListing: React.FC<TherapistProps> = ({ therapist }) => {
             <div className="w-32 h-32 rounded-lg overflow-hidden bg-gradient-to-br from-teal-900 to-teal-700 relative">
               <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-sky-400 opacity-30 rounded-b-[100%] h-1/2 -bottom-4 -mx-4"></div>
               <img
-                src={therapist.image}
+                src={therapist.profilePic}
                 alt={therapist.name}
                 className="w-full h-full object-cover object-center relative z-10"
               />
@@ -53,7 +53,7 @@ const TherapistListing: React.FC<TherapistProps> = ({ therapist }) => {
             <div className="mt-4">
               <div className="text-gray-400 text-sm mb-1">Expertise:</div>
               <div className="flex flex-wrap gap-2">
-                {therapist.expertise.map((skill, index) => (
+                {therapist.specializations.map((skill, index) => (
                   <span
                     key={index}
                     className="text-xs px-3 py-1 bg-[#283548] text-gray-300 rounded-full"
@@ -132,7 +132,7 @@ const TherapistListing: React.FC<TherapistProps> = ({ therapist }) => {
           <Button
             className="bg-teal-400 hover:bg-teal-500 text-gray-900 font-medium px-8 ml-auto"
           >
-            Call
+            BOOK
           </Button>
         </div>
       </div>
