@@ -22,11 +22,15 @@ const Navbar = () => {
       let response = await res.json();
       setToken(response);
     }
-    // console.log("token: ", token==null);
-
+    
     verify();
-  }, [])
 
+  }, [])
+  
+  const handleProfileClick = () => {
+    if (token.role === "therapist") {navigate('/therapistHome')}
+    else {navigate('/patientHome')}
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -76,10 +80,25 @@ const Navbar = () => {
               <Button variant="ghost" size="sm" className="rounded-full">
                 <WhatsappIcon />
               </Button>
-              <Button variant="default" className="rounded-full border-2 hover:scale-105 transition-all duration-500" onClick={() => { navigate('/signup') }}>
-                {token?.name==undefined ? 'Get Started' : `${token?.name}`}
-                {/* Get Started */}
-              </Button>
+              {token?.name == undefined ?
+                (
+                  <Button
+                    variant="default"
+                    className="rounded-full border-2 hover:scale-105 transition-all duration-500"
+                    onClick={() => { navigate('/signup') }}
+                  >
+                    Get Started
+                  </Button>
+                ) : (
+                  <Button
+                    variant="default"
+                    className="rounded-full border-2 hover:scale-105 transition-all duration-500"
+                    onClick={() =>  {handleProfileClick()} }
+                  >
+                    {token.name}
+                  </Button>
+                )
+              }
             </div>
           </div>
 

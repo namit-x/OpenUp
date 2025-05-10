@@ -14,12 +14,17 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "strictNullChecks": true,
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "experimentalDecorators": true,
     "declaration": true,
     "declarationMap": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
+  },
+  "resolutions": {
+    "@types/express": "^4.17.21"
   },
   "include": [
     "src/**/*.ts"

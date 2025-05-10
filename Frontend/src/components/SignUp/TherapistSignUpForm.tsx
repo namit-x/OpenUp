@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
 // Component props interface
 interface TherapistSignUpFormProps {
@@ -23,6 +25,7 @@ export const TherapistSignUpForm: React.FC<TherapistSignUpFormProps> = ({ onBack
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const navigate = useNavigate();
 
   // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -67,7 +70,13 @@ export const TherapistSignUpForm: React.FC<TherapistSignUpFormProps> = ({ onBack
         },
       })
       let response = await res.json();
-      console.log("Response: ", response);
+      if (response.message === "Operation Successful") {
+        navigate('/signin');
+      }
+      else {
+        console.log("server message: ", response.message);
+        alert("An unexpected error occurred. Please try again.");
+      }
       setLoading(false);
     } catch (error) {
       console.error("Form submission error:", error);

@@ -32,8 +32,8 @@ const TodayAppointments = () => {
           // Mobile view - card style list
           <div className="space-y-3">
             {todayAppointments.map((appointment) => (
-              <div 
-                key={appointment.id} 
+              <div
+                key={appointment.id}
                 className="p-3 bg-[#283548] rounded-lg border border-gray-700 flex flex-col space-y-2"
               >
                 <div className="flex justify-between items-center">
@@ -44,7 +44,10 @@ const TodayAppointments = () => {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm text-gray-400">{appointment.time}</span>
-                  <button className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500">
+                  <button
+                    className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
+                    onClick={()=> {console.log("Namit");}}
+                  >
                     Join
                   </button>
                 </div>
@@ -72,7 +75,10 @@ const TodayAppointments = () => {
                     <TableCell className="text-gray-300">{appointment.time}</TableCell>
                     <TableCell className="text-gray-300">{appointment.type}</TableCell>
                     <TableCell>
-                      <button className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500">
+                      <button
+                      className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
+                        onClick={()=>{console.log("Namit")}}
+                      >
                         Join
                       </button>
                     </TableCell>

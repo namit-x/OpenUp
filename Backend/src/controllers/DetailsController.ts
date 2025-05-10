@@ -14,7 +14,7 @@ export const details = async (req: AuthRequest, res: Response) => {
 
     let userData= await User.findOne({ phone: req.user.phone });
 
-    res.status(200).json({name: userData?.fullName, phone: userData?.phone});
+    res.status(200).json({name: userData?.fullName, phone: userData?.phone, role: userData?.role});
     return;
   } catch (error) {
     console.error("Error:", error);
