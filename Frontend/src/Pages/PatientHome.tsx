@@ -1,12 +1,12 @@
+import { useState, useEffect} from 'react';
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
-import TherapistListing from "../components/TherapistListing";
+import TherapistListing from "../components/patient/TherapistListing";
 import { Button } from "../components/ui/Button";
 import { Filter } from "lucide-react";
 import { useQuery } from "@apollo/client";
 import { GET_THERAPISTS } from "../graphql/queries";
 import TherapistSkeleton from "../components/ui/therapistSkeltonCards";
-
 
 interface Therapist {
   id: string;
@@ -21,60 +21,26 @@ interface Therapist {
 };
 
 const PatientHome = () => {
-  const { data, loading, error } = useQuery(GET_THERAPISTS, {
+  const [patientPhone, setPatientPhone] = useState<string>('');
+  const { data, loading } = useQuery(GET_THERAPISTS, {
     variables: {
       role: "therapist",
     }
   });
-  console.log({ data, loading, error });
 
+  useEffect(() => {
 
-  // const therapists = [
-  //   {
-  //     id: 1,
-  //     name: "Anamika",
-  //     profilePic: "/Doc1.png",
-  //     experience: "2+ years of experience",
-  //     price: "₹1500 for 50 mins",
-  //     specialization: ["Anxiety disorders", "Depressive disorders"],
-  //     languages: ["English", "Hindi"],
-  //     availableVia: ["Video", "Voice"],
-  //     nextSlot: "Today, 05:00 PM"
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Aman",
-  //     profilePic: "/Doc2.png",
-  //     experience: "3+ years of experience",
-  //     price: "₹1700 for 50 mins",
-  //     specialization: ["Anxiety disorders", "Depressive disorders"],
-  //     languages: ["English", "Hindi"],
-  //     availableVia: ["Video", "Voice"],
-  //     nextSlot: "Today, 04:30 PM"
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Ananya",
-  //     profilePic: "/Doc3.png",
-  //     experience: "3+ years of experience",
-  //     price: "₹1600 for 50 mins",
-  //     specialization: ["Family therapy", "Relationship counseling"],
-  //     languages: ["English", "Hindi", "Bengali"],
-  //     availableVia: ["Video", "Voice"],
-  //     nextSlot: "Today, 06:15 PM"
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Namit",
-  //     profilePic: "/Doc4.png",
-  //     experience: "7+ years of experience",
-  //     price: "₹2200 for 50 mins",
-  //     specialization: ["Trauma", "PTSD", "Anxiety disorders"],
-  //     languages: ["English", "Hindi", "Bengali"],
-  //     availableVia: ["Video", "Voice"],
-  //     nextSlot: "Tomorrow, 10:30 AM"
-  //   }
-  // ];
+    const fetchPatientID = async () => {
+      let res = await fetch('http://localhost:5000/details', {
+        method: 'POST',
+        credentials: 'include',
+      });
+      let response = await res.json();
+      setPatientPhone(response.phone);
+    }
+    fetchPatientID();
+
+  }, [])
 
   return (
     <div className="bg-slate-900">
@@ -105,7 +71,7 @@ const PatientHome = () => {
               ))
             ) : (
               data?.getTherapists?.map((therapist: Therapist) => (
-                <TherapistListing key={therapist.id} therapist={therapist} />
+                <TherapistListing key={therapist.id} therapist={therapist} patientPhone={patientPhone} />
               ))
             )}
           </div>

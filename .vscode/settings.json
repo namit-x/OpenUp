@@ -1,0 +1,12 @@
+{
+    "editor.inlineSuggest.enabled": false,
+    "cursor.suggest.enableAutocompletions": false,
+    "cursor.suggest.enableInlineCompletions": false,
+    "cursor.suggest.inline.enabled": false,
+    "cursor.suggest.autocomplete.enabled": false,
+    "cursor.suggest.enabled": false,
+    "cursor.experimental.suggestions.enabled": false,
+    "github.copilot.enable": {
+        "*": false
+    }
+}

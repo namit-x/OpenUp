@@ -13,6 +13,7 @@ import { login, signup } from './controllers/AuthControllers';
 import { details } from './controllers/DetailsController';
 import { verifyToken } from './controllers/AuthMiddleware';
 import { therapistData } from './controllers/TherapistDataController';
+import { bookSession } from './controllers/sessionManager';
 
 dotenv.config();
 connectDB();
@@ -34,6 +35,7 @@ app.post('/signup', signup);
 app.post('/signin', login);
 app.post('/details', verifyToken, details);
 app.post('/therapistData', therapistData);
+app.post('/bookSession', bookSession)
 
 // ✅ Apollo Server setup
 const server = new ApolloServer({

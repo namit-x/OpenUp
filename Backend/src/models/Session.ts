@@ -6,7 +6,7 @@ const sessionSchema = new mongoose.Schema({
   scheduledTime: { type: Date, required: true },
   durationMinutes: { type: Number, default: 60 },
   status: { type: String, enum: ['scheduled', 'completed', 'cancelled'], default: 'scheduled' },
-  meetingLink: { type: String }, // for online sessions (Zoom/Meet/etc)
+  // meetingLink: { type: String }, // for online sessions (Zoom/Meet/etc)
 }, { timestamps: true });
 
 export default mongoose.model('Session', sessionSchema);
