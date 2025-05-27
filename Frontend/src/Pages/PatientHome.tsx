@@ -1,4 +1,4 @@
-import { useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import TherapistListing from "../components/patient/TherapistListing";
@@ -22,6 +22,7 @@ interface Therapist {
 
 const PatientHome = () => {
   const [patientPhone, setPatientPhone] = useState<string>('');
+  const [dateList, setDateList] = useState<string[]>([]);
   const { data, loading } = useQuery(GET_THERAPISTS, {
     variables: {
       role: "therapist",
@@ -29,7 +30,21 @@ const PatientHome = () => {
   });
 
   useEffect(() => {
+    let dateList = [];
+    for (let i = 2; i < 4; i++) {
+      let today = new Date();
+      today.setDate(today.getDate() + i);
+      let formattedDate = today.toLocaleDateString('en-US', {
+        weekday: 'short',
+        day: '2-digit',
+        month: 'long',
+      });
+      dateList.push(formattedDate)
+    }
+    setDateList(["Today", "Tomorrow", ...dateList]);
+  }, [])
 
+  useEffect(() => {
     const fetchPatientID = async () => {
       let res = await fetch('http://localhost:5000/details', {
         method: 'POST',
@@ -71,7 +86,7 @@ const PatientHome = () => {
               ))
             ) : (
               data?.getTherapists?.map((therapist: Therapist) => (
-                <TherapistListing key={therapist.id} therapist={therapist} patientPhone={patientPhone} />
+                <TherapistListing key={therapist.id} therapist={therapist} patientPhone={patientPhone} dateTabs={dateList} />
               ))
             )}
           </div>

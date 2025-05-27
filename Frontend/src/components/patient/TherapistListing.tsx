@@ -16,23 +16,13 @@ interface TherapistProps {
     nextSlot: string;
   };
   patientPhone: string;
+  dateTabs: string[];
 }
 
-const TherapistListing: React.FC<TherapistProps> = ({ therapist, patientPhone}) => {
+const TherapistListing: React.FC<TherapistProps> = ({ therapist, patientPhone, dateTabs}) => {
   const [activeTab, setActiveTab] = useState("Online");
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
 
-  // const bookSession = async (phone: number, id: string) => {
-  //   let res= await fetch('http://localhost:5000/bookSession', {
-  //     method: 'POST',
-  //     headers: {
-  //       "content-type" : "json/application",
-  //     },
-  //     body: JSON.stringify({phone: phone, id: id}),
-  //   });
-  //   let response = await res.text();
-  //   console.log("Response: ", response);
-  // }
 
   const handleBook = async (id: string) => {
     //a booking modal will be opened and data from it will be recorded here
@@ -181,6 +171,8 @@ const TherapistListing: React.FC<TherapistProps> = ({ therapist, patientPhone}) 
         therapistId={therapist.id}
         patientPhone={patientPhone}
         therapistName={therapist.name}
+        setIsBookingModalOpen = {setIsBookingModalOpen}
+        dateTabs = {dateTabs}
       />
     </>
   );

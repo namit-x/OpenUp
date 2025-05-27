@@ -12,6 +12,8 @@ interface BookingModalProps {
   therapistId: string;
   patientPhone: string;
   therapistName: string;
+  setIsBookingModalOpen: any;
+  dateTabs: string[];
 }
 
 const BookingModal: React.FC<BookingModalProps> = ({
@@ -20,6 +22,8 @@ const BookingModal: React.FC<BookingModalProps> = ({
   therapistId,
   patientPhone,
   therapistName,
+  setIsBookingModalOpen,
+  dateTabs,
 }) => {
   const [selectedSlot, setSelectedSlot] = useState<string>('00:00 AM');
   const [selectedDate, setSelectedDate] = useState<string>("Today");
@@ -54,47 +58,31 @@ const BookingModal: React.FC<BookingModalProps> = ({
     "09:00 AM", "02:00 PM", "05:00 PM"
   ];
 
-  const dateTabs = ["Today", "Tomorrow", "Wed, 12 May", "Thu, 13 May"];
-
-  // const handleBooking = async () => {
-  //   if (!selectedSlot) {
-  //     toast({
-  //       title: "Error",
-  //       description: "Please select a time slot",
-  //       className: "bg-red-500 text-white",
-  //     });
-  //     return;
-  //   }
-
-  //   let res = await fetch('http://localhost:5000/bookSession', {
-  //     method: 'POST',
-  //     credentials: 'include',
-  //     body: JSON.stringify({therapistID: 123}),// Add something here MotherFleckerrrrrrrr
-  //     headers: {
-  //       "Content-Type": "application/json"
-  //     },
-  //   })
-
-  //   console.log("Selected Time: ", convert12HourToISO(selectedSlot));
-  //   toast({
-  //     title: "Booking confirmed!",
-  //     description: `Booking confirmed with ${therapistName} for ${selectedDate} at ${selectedSlot}`,
-  //     className: "bg-white text-black",
-  //   });
-  //   onClose();
-  // };
-
   const bookSession = async () => {
-    console.log(`TherapistID: ${therapistId} PatientID: ${patientPhone}`)
     let res= await fetch('http://localhost:5000/bookSession', {
       method: 'POST',
       headers: {
         "Content-Type" : "application/json",
       },
-      body: JSON.stringify({therapistId, patientPhone}),
+      body: JSON.stringify({therapistId, patientPhone, selectedDate, selectedSlot}),
     });
     let response = await res.text();
-    console.log("Response: ", response);
+    if (res.ok) {
+      setIsBookingModalOpen(false);
+      toast({
+        title: "Booked!",
+        description: response,
+        className: "bg-white text-black",
+      });
+    }
+    else {
+      setIsBookingModalOpen(false);
+      toast({
+        title: "Booked!",
+        description: "Unexpected error ocurred",
+        className: "bg-red-500 text-white",
+      });
+    }
   }
 
   return (
