@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Button } from '../components/ui/Button';
-import { Menu, Phone } from 'lucide-react';
+import { LogOut, Menu, Phone, User, UserCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState<boolean>(false);
   const navigate = useNavigate();
   const [token, setToken] = useState<any | null>(null);
 
   useEffect(() => {
     const verify = async () => {
-
       const res = await fetch('http://localhost:5000/details', {
         method: 'POST',
         headers: {
@@ -22,14 +22,14 @@ const Navbar = () => {
       let response = await res.json();
       setToken(response);
     }
-    
+
     verify();
 
   }, [])
-  
+
   const handleProfileClick = () => {
-    if (token.role === "therapist") {navigate('/therapistHome')}
-    else {navigate('/patientHome')}
+    if (token.role === "therapist") { navigate('/therapistHome') }
+    else { navigate('/patientHome') }
   }
 
   useEffect(() => {
@@ -90,13 +90,58 @@ const Navbar = () => {
                     Get Started
                   </Button>
                 ) : (
-                  <Button
-                    variant="default"
-                    className="rounded-full border-2 hover:scale-105 transition-all duration-500"
-                    onClick={() =>  {handleProfileClick()} }
-                  >
-                    {token.name}
-                  </Button>
+                  <>
+                    <Button
+                      variant="default"
+                      className="rounded-full border-2 hover:scale-105 transition-all duration-500"
+                      onClick={() => { handleProfileClick() }}
+                      onMouseEnter={() => setShowDropdown(true)}
+                    >
+                      {token.name}
+                    </Button>
+                    {showDropdown && (
+                      <div
+                        className="absolute z-40 right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100"
+                        onMouseLeave={() => setShowDropdown(false)}
+                      >
+                        <button
+                          onClick={() => {
+                            navigate('/profile');
+                            setShowDropdown(false);
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 text-[16px] text-black hover:bg-gray-50 w-full text-left"
+                        >
+                          <UserCircle className="w-5 h-5" />
+                          Profile
+                        </button>
+                        {!token ? (
+                          <button
+                            onClick={() => {
+                              document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                              navigate('/login');
+                              setShowDropdown(false);
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 text-[16px] text-black hover:bg-gray-50 w-full text-left"
+                          >
+                            <User className="w-5 h-5" />
+                            Sign In
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              // Handle sign out logic here
+                              setShowDropdown(false);
+                              navigate('/login');
+                            }}
+                            className="flex items-center gap-2 px-4 py-2 text-[16px] text-black hover:bg-gray-50 w-full text-left"
+                          >
+                            <LogOut className="w-5 h-5" />
+                            Sign Out
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )
               }
             </div>
