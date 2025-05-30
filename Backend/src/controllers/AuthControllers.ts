@@ -72,7 +72,7 @@ export const login = async (req: Request, res: Response) => {
   const data: loginData = req.body;
   console.log("Data received: ", data);
 
-  let exists = await User.findOne({ phone: data.phone}).exec();
+  let exists = await User.findOne({ phone: data.phone }).exec();
 
   if (exists === null) {
     console.log(`Account doesn't exists: ${exists}`);
@@ -94,9 +94,9 @@ export const login = async (req: Request, res: Response) => {
 
       res.cookie('AuthToken', token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: 15 * 24 * 60 * 60 * 1000,
-        sameSite: "strict",
+        sameSite: "lax",
       })
 
       res.status(201).json({
@@ -108,4 +108,14 @@ export const login = async (req: Request, res: Response) => {
       res.status(400).json({ message: "Not Authorized" });
     }
   }
+}
+
+export const logout = (req: Request, res: Response) => {
+  console.log("Request reachedd!");
+  res.clearCookie("AuthToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+  });
+  res.status(200).json({ message: "Logged out" });
 }

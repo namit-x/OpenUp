@@ -61,7 +61,7 @@ const PatientHome = () => {
     <div className="bg-slate-900">
       <Navbar />
       <div className="min-h-screen bg-[#111827] py-6 px-4 sm:px-6 lg:px-8 mb-24">
-        <div className="max-w-7xl mx-auto mt-24">
+        <div className="max-w-7xl mx-auto mt-8">
           <div className="mb-8 flex justify-between items-center flex-wrap gap-4">
             <h1 className="text-2xl font-semibold bg-gradient-to-r from-teal-400 via-green-300 to-sky-400 bg-clip-text text-transparent">
               All Therapists

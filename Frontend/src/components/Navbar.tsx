@@ -19,8 +19,10 @@ const Navbar = () => {
         },
         credentials: 'include',
       });
-      let response = await res.json();
-      setToken(response);
+      if (res.ok) {
+        let response = await res.json();
+        setToken(response);
+      }
     }
 
     verify();
@@ -51,9 +53,18 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleCookieDelete = async () => {
+    let res = await fetch("http://localhost:5000/logout", {
+      method: 'POST',
+      credentials: "include",
+    });
+    let response = await res.json();
+    console.log("Response: ", response.message);
+  }
+
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
+      className={`relative top-0 left-0 overflow-visible z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
         }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -101,7 +112,7 @@ const Navbar = () => {
                     </Button>
                     {showDropdown && (
                       <div
-                        className="absolute z-40 right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100"
+                        className="absolute z-40 right-12 top-16 mt-2 w-48 bg-white rounded-md shadow-lg py-1 border border-gray-100"
                         onMouseLeave={() => setShowDropdown(false)}
                       >
                         <button
@@ -129,9 +140,9 @@ const Navbar = () => {
                         ) : (
                           <button
                             onClick={() => {
-                              // Handle sign out logic here
+                              handleCookieDelete();
                               setShowDropdown(false);
-                              navigate('/login');
+                              navigate('/signin');
                             }}
                             className="flex items-center gap-2 px-4 py-2 text-[16px] text-black hover:bg-gray-50 w-full text-left"
                           >

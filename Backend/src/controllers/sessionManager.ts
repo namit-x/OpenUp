@@ -26,7 +26,6 @@ export const bookSession = async(req: Request, res: Response) => {
       day: 'numeric',
     });
   }
-  
 
   const therapistId = req.body.therapistId;
   let patient = await User.findOne({phone: req.body.patientPhone})
@@ -44,5 +43,14 @@ export const bookSession = async(req: Request, res: Response) => {
     console.log(`PatientId: ${patientId} booked TherapistID: ${therapistId} on ${date} at ${timeSlot}`);
     res.status(200).send('Session booked successfully.');
   }
+}
 
+export const fetchSessions = async(req: Request, res: Response) => {
+  const phone = req.body.details.phone;
+  const therapist: any = await User.findOne({phone});
+  const {_id} = therapist;
+  console.log("Therapist ID: ", _id.toString());
+  const session: any = await Session.find({therapistId: _id});
+  console.log(session);
+  res.json({session});
 }

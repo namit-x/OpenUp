@@ -9,11 +9,11 @@ import { typeDefs } from '../graphql/typeDefs';
 import { resolvers } from '../graphql/resolvers';
 
 import connectDB from './controllers/DBController';
-import { login, signup } from './controllers/AuthControllers';
+import { login, logout, signup } from './controllers/AuthControllers';
 import { details } from './controllers/DetailsController';
 import { verifyToken } from './controllers/AuthMiddleware';
 import { therapistData } from './controllers/TherapistDataController';
-import { bookSession } from './controllers/sessionManager';
+import { bookSession, fetchSessions } from './controllers/sessionManager';
 
 dotenv.config();
 connectDB();
@@ -33,9 +33,11 @@ app.get('/', (req: Request, res: Response) => {
 });
 app.post('/signup', signup);
 app.post('/signin', login);
+app.post('/logout', logout);
 app.post('/details', verifyToken, details);
 app.post('/therapistData', therapistData);
 app.post('/bookSession', bookSession)
+app.post('/fetchSessions', fetchSessions)
 
 // ✅ Apollo Server setup
 const server = new ApolloServer({
