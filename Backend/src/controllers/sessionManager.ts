@@ -28,8 +28,10 @@ export const bookSession = async(req: Request, res: Response) => {
   }
 
   const therapistId = req.body.therapistId;
+  // console.log(therapistId);
   let patient = await User.findOne({phone: req.body.patientPhone})
   const patientId = patient?.id;
+  // console.log(patientId);
   const timeSlot = req.body?.selectedSlot;
   const date = getFormattedDate(req.body?.selectedDate);
 
@@ -40,17 +42,28 @@ export const bookSession = async(req: Request, res: Response) => {
   else {
     let newSession = new Session({therapistId, patientId, scheduledTime: timeSlot, scheduledDay: date, status: 'scheduled'});
     await newSession.save();
-    console.log(`PatientId: ${patientId} booked TherapistID: ${therapistId} on ${date} at ${timeSlot}`);
+    // console.log(`PatientId: ${patientId} booked TherapistID: ${therapistId} on ${date} at ${timeSlot}`);
     res.status(200).send('Session booked successfully.');
   }
 }
 
 export const fetchSessions = async(req: Request, res: Response) => {
   const phone = req.body.details.phone;
+  console.log(req.body.details);
   const therapist: any = await User.findOne({phone});
   const {_id} = therapist;
   console.log("Therapist ID: ", _id.toString());
-  const session: any = await Session.find({therapistId: _id});
-  console.log(session);
-  res.json({session});
+  const sessions: any = await Session.find({therapistId: _id.toString()});
+  const response = [];
+  // console.log(sessions);
+  for (let i = 0; i < sessions.length; i++) {
+    let session = sessions[i]
+    const patient: any = await User.findOne({_id: session.patientId.toString()});
+    let obj = {name: patient.fullName, time: session.scheduledTime, type: "Video"};
+    response.push(obj);
+  }
+  console.log("Response: ", response);
+
+  // patient name, time, type(video, audio)
+  res.json({message: "wait bhai"});
 }
