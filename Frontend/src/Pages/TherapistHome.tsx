@@ -1,32 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SidebarProvider, SidebarInset } from "../components/ui/sidebar";
 import TherapistSidebar from "../components/therapist/therapistSidebar";
 import AppointmentCalendar from "../components/therapist/appointmentCalendar";
 import TodayAppointments from "../components/therapist/todayAppointments";
 import { useIsMobile } from "../hooks/use-mobile";
 import Footer from "../components/Footer";
-import {fetchDetails} from '../lib/utils'
 
 const TherapistHomepage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const isMobile = useIsMobile();
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      const details = await fetchDetails();
-      console.log(details);
-      let res = await fetch('http://localhost:5000/fetchSessions', {
-        method: 'POST',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({details}),
-      })
-      let response = await res.json();
-      console.log("Response: ", response);
-    }
-    fetchSession();
-  }, [])
 
   return (
     <>
@@ -48,7 +30,7 @@ const TherapistHomepage = () => {
 
                 {/* Today's Appointments Component */}
                 <div className="lg:col-span-1">
-                  <TodayAppointments />
+                  <TodayAppointments/>
                 </div>
               </div>
             </div>

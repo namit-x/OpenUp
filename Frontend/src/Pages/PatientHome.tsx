@@ -45,7 +45,7 @@ const PatientHome = () => {
   }, [])
 
   useEffect(() => {
-    const fetchPatientID = async () => {
+    const fetchPatientPhone = async () => {
       let res = await fetch('http://localhost:5000/details', {
         method: 'POST',
         credentials: 'include',
@@ -53,7 +53,7 @@ const PatientHome = () => {
       let response = await res.json();
       setPatientPhone(response.phone);
     }
-    fetchPatientID();
+    fetchPatientPhone();
 
   }, [])
 

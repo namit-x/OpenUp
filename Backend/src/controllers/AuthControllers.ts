@@ -75,7 +75,7 @@ export const login = async (req: Request, res: Response) => {
   let exists = await User.findOne({ phone: data.phone }).exec();
 
   if (exists === null) {
-    console.log(`Account doesn't exists: ${exists}`);
+    console.log(`Account doesn't exists.`);
     res.status(400).json({
       message: "Account doesn't exists.",
     });

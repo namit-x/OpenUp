@@ -23,26 +23,6 @@ const TherapistListing: React.FC<TherapistProps> = ({ therapist, patientPhone, d
   const [activeTab, setActiveTab] = useState("Online");
   const [isBookingModalOpen, setIsBookingModalOpen] = useState<boolean>(false);
 
-
-  const handleBook = async (id: string) => {
-    //a booking modal will be opened and data from it will be recorded here
-    // Open the booking modal instead of immediately booking
-    setIsBookingModalOpen(true);
-
-    // Preload user data in the background
-    try {
-      let res = await fetch('http://localhost:5000/details', {
-        method: 'POST',
-        credentials: 'include',
-      });
-      let response = await res.json();
-      console.log("User data loaded for ID:", id);
-      // We'll use this data when they actually confirm booking
-    } catch (error) {
-      console.error("Error loading user data:", error);
-    }
-  }
-
   return (
     <>
       <div className="bg-[#1e293b] rounded-lg shadow-lg border border-gray-700 overflow-hidden">
@@ -156,7 +136,7 @@ const TherapistListing: React.FC<TherapistProps> = ({ therapist, patientPhone, d
             {/* Book Button */}
             <Button
               className="bg-teal-400 hover:bg-teal-500 text-gray-900 font-medium px-8 ml-auto"
-              onClick={() => handleBook(therapist.id)}
+              onClick={() => setIsBookingModalOpen(true)}
             >
               BOOK
             </Button>
