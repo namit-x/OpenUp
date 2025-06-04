@@ -62,29 +62,33 @@ export const fetchAllSessions = async (id: Object) => {
 
   console.log("Therapist ID: ", id.toString());
   const sessions: any = await Session.find({ therapistId: id.toString() });
-  const response = [];
-
-  for (let i = 0; i < sessions.length; i++) {
-    let session = sessions[i]
-    const patient: any = await User.findOne({ _id: session.patientId.toString() });
-    response.push(patient);
-  }
-  return response;
+  return sessions;
 }
 
 const isToday = (dateStr: string) => {
-  const parsedDate = new Date(`${dateStr}, ${new Date().getFullYear()}`);
-  console.log(parsedDate);
+  // Remove comma and split the string
+  const cleanStr = dateStr.replace(',', '');
+  const [_, monthName, dayStr] = cleanStr.split(' ');
+  const day = parseInt(dayStr, 10);
+  const year = new Date().getFullYear();
+
+  // Map for month abbreviation to index
+  const monthMap: Record<string, number> = {
+    Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+    Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+  };
+
+  const month = monthMap[monthName];
+  if (month === undefined || isNaN(day)) return false;
+
+  // Create date at midnight local time (avoids UTC issues)
+  const parsedDate = new Date(year, month, day);
   const today = new Date();
 
-  // console.log(parsedDate.getDate(), today.getDate(),
-  //   parsedDate.getMonth(), today.getMonth(),
-  //   parsedDate.getFullYear(), today.getFullYear())
-
   return (
-    parsedDate.getDate() === today.getDate() &&
+    parsedDate.getFullYear() === today.getFullYear() &&
     parsedDate.getMonth() === today.getMonth() &&
-    parsedDate.getFullYear() === today.getFullYear()
+    parsedDate.getDate() === today.getDate()
   );
 };
 
@@ -95,10 +99,21 @@ export const fetchTodaysSessions = async (req: Request, res: Response) => {
   const sessions = await fetchAllSessions(_id);
   let todaySessions = [];
   for (let i = 0; i < sessions.length; i++) {
+    console.log(`Passed date: ${sessions[i].scheduledDay}, isToday: ${isToday(sessions[i].scheduledDay)}`)
     if (isToday(sessions[i].scheduledDay)) {
       todaySessions.push(sessions[i]);
     }
+    // console.log("Scheduled date: ", sessions[i].scheduledDay);
   }
-  console.log(todaySessions)
-  res.json({ fetchTodaysSessions });
+  console.log("Today's sessions", todaySessions);
+  let todaySessionsObj = [];
+
+  for (let i = 0; i < todaySessions.length; i++) {
+    let id = todaySessions[i].patientId.toString();
+    let patient = await User.findOne({_id:id});
+    // console.log("Patient: ", patient);
+    todaySessionsObj.push({name: patient?.fullName, time: todaySessions[i].scheduledTime, type: 'Video'})
+
+  }
+  res.json({todaySessionsObj});
 }

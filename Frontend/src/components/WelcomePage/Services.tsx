@@ -11,7 +11,7 @@ const Services = () => {
       delay: 0.1
     },
     {
-      id: 2, 
+      id: 2,
       title: 'Psychiatry for Self',
       subtitle: '18 years and above',
       description: 'Expert psychiatric care with personalized treatment plans',
@@ -38,7 +38,7 @@ const Services = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 pb-24">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 py-2">
         {services.map((service) => (
           <ServiceCard
             key={service.id}

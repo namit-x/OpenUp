@@ -38,7 +38,7 @@ const TodayAppointments = () => {
       });
       let response = await res.json();
       console.log(response);
-      // setAppointments(response.todaySessions);
+      setAppointments(response.todaySessionsObj);
       setLoading(false);
     };
     fetchSession();
