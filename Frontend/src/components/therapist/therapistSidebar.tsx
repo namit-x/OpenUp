@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { fetchDetails } from '../../lib/utils';
 import {
   Home,
   History,
@@ -31,9 +32,24 @@ const sidebarItems = [
   { title: "Redeem", icon: Clock },
 ];
 
+interface User {
+  name: string,
+  phone: string,
+  role: string,
+}
+
 const TherapistSidebar = () => {
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  const [user, setUser] = useState<User>();
+
+  useEffect(() => {
+    const fetch = async()=>{
+      let userDetails = await fetchDetails();
+      setUser(userDetails);
+    }
+    fetch();
+  }, [])
 
   return (
     <Sidebar className="border-gray-700">
@@ -69,7 +85,7 @@ const TherapistSidebar = () => {
             <img src="/Doc1.png" alt="RS" className="w-12 h-12 rounded-full object-cover" />
           </div>
           <div>
-            <p className="text-sm">Dr. Rhea Sharma</p>
+            <p className="text-sm">{user? `${user.name}` : "Loading..."}</p>
             <p className="text-xs text-gray-400">Clinical Psychologist</p>
           </div>
         </div>

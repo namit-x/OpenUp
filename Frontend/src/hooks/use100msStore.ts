@@ -40,7 +40,7 @@ export const use100msStore = () => {
   const localAudioTrackID = useHMSStore(selectLocalAudioTrackID);
 
   // Local tracks
-  const localVideoTrack = useHMSStore(selectVideoTrackByID(localVideoTrackID));
+  const localVideoTrack: any = useHMSStore(selectVideoTrackByID(localVideoTrackID));
   const localAudioTrack = useHMSStore(selectAudioTrackByID(localAudioTrackID));
 
   // Dominant speaker
@@ -61,7 +61,7 @@ export const use100msStore = () => {
     return track && track.enabled ? track : null;
   };
 
-  const isTrackEnabled = (track: HMSTrack | undefined) =>
+  const isTrackEnabled = (track: any) =>
     track && track.enabled;
 
   return {

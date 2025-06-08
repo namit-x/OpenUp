@@ -179,7 +179,7 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
         {/* Remote Participants */}
         {peers.length > 0 ? (
           peers.slice(0, 3).map((peer) => {
-            const videoTrack = getVideoTrack(peer);
+            const videoTrack = getVideoTrack(peer) || undefined;
             const hasVideo = isTrackEnabled(videoTrack);
 
             return (
