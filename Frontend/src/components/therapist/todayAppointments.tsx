@@ -11,6 +11,7 @@ import {
 import { Clock } from "lucide-react";
 import { useIsMobile } from "../../hooks/use-mobile";
 import { fetchDetails } from '../../lib/utils';
+import { useVC } from '../contexts/VCContext';
 
 const skeletonArray = Array.from({ length: 3 });
 
@@ -25,6 +26,18 @@ const TodayAppointments = () => {
   const isMobile = useIsMobile();
   const [appointments, setAppointments] = useState<Appointment[]>();
   const [loading, setLoading] = useState(true);
+  // const { joinRoom, state } = useVC();
+
+  const handleJoin = async ()=> {
+
+    let res = await fetch('http://localhost:5000/generate-token', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: 'include',
+    })
+  }
 
   useEffect(() => {
     const fetchSession = async () => {

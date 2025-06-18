@@ -21,6 +21,7 @@ const Navbar = () => {
       });
       if (res.ok) {
         let response = await res.json();
+        console.log(response);
         setToken(response);
       }
     }

@@ -54,7 +54,7 @@ export class VCService {
       if (enabled !== undefined) {
         await this.hmsActions.setLocalAudioEnabled(enabled);
       } else {
-        // Get current state from store
+        // Getting current state from store
         const localPeer = useHMSStore(selectLocalPeer);
         const currentState = localPeer?.audioTrack?.enabled ?? false;
         await this.hmsActions.setLocalAudioEnabled(!currentState);
@@ -72,7 +72,7 @@ export class VCService {
       if (enabled !== undefined) {
         await this.hmsActions.setLocalVideoEnabled(enabled);
       } else {
-        // Get current state from store
+        // Getting current state from store
         const localPeer = useHMSStore(selectLocalPeer);
         const currentState = localPeer?.videoTrack?.enabled ?? false;
         await this.hmsActions.setLocalVideoEnabled(!currentState);

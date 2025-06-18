@@ -90,6 +90,10 @@ export const login = async (req: Request, res: Response) => {
         name: exists.fullName,
       }
       const secretKey = process.env.Secret_Key as string;
+      console.log('Secret Key: ', secretKey)
+      if (secretKey) {
+        console.log('Sceret key is empty');
+      }
       const token = jwt.sign(payload, secretKey, { expiresIn: "15D" });
 
       res.cookie('AuthToken', token, {

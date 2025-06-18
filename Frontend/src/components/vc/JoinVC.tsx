@@ -20,7 +20,15 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
 
   const handleJoinRoom = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    let roomInfo = await fetch('https://localhost:5000/roomFormation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    })
+
     if (!roomId.trim() || !token.trim()) {
       toast({
         title: "Missing Information",
@@ -61,7 +69,7 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
             Enter your session details to join the video call
           </p>
         </CardHeader>
-        
+
         <CardContent>
           <form onSubmit={handleJoinRoom} className="space-y-4">
             <div className="space-y-2">
@@ -94,7 +102,7 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
                 required
               />
             </div>
-            
+
             <div className="space-y-2">
               <Label htmlFor="token" className="text-gray-300">
                 Access Token
@@ -117,7 +125,7 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
                 <p className="text-red-400 text-sm">{state.error}</p>
               </div>
             )}
-            
+
             <Button
               type="submit"
               className="w-full bg-teal-400 hover:bg-teal-500 text-gray-900 font-medium py-2 mt-6"
@@ -136,7 +144,7 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
               )}
             </Button>
           </form>
-          
+
           <div className="mt-6 p-4 bg-[#283548] rounded-lg border border-gray-700">
             <h4 className="text-sm font-medium text-teal-400 mb-2">Session Information</h4>
             <ul className="text-xs text-gray-400 space-y-1">

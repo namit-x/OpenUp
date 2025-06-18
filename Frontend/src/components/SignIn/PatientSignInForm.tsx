@@ -17,20 +17,6 @@ interface loginData {
   phone: string,
 }
 
-const verifyDetails = async (data: loginData) => {
-  let res = await fetch('http://localhost:5000/signin', {
-    method: 'POST',
-    body: JSON.stringify(data),
-    credentials: 'include',
-    headers: {
-      "Content-Type": "application/json"
-    },
-  })
-
-  let response = await res.json();
-  return response;
-}
-
 export const PatientSignInForm: React.FC<PatientSignInFormProps> = ({ onBack }) => {
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState('');
@@ -43,6 +29,27 @@ export const PatientSignInForm: React.FC<PatientSignInFormProps> = ({ onBack }) 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    const verifyDetails = async (data: loginData) => {
+      try {
+    
+        let res = await fetch('http://localhost:5000/signin', {
+          method: 'POST',
+        body: JSON.stringify(data),
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json"
+        },
+      })
+      
+      let response = await res.json();
+      return response;
+    }
+    catch (error) {
+      setLoading(false);
+      console.log('Error ocurred: ', error);
+    }
+    }
 
     // Basic validation
     if (!mobileNumber.trim() || !password.trim()) {
