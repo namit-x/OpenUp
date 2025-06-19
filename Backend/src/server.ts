@@ -15,6 +15,7 @@ import { verifyToken } from './controllers/AuthMiddleware';
 import { therapistData } from './controllers/TherapistDataController';
 import { bookSession, fetchTodaysSessions } from './controllers/sessionManager';
 import { createRoom, AuthenticatedRequest } from './controllers/VCControllers'
+import { getStoredToken } from './controllers/token';
 
 dotenv.config();
 connectDB();
@@ -42,6 +43,7 @@ app.post('/fetchTodaysSessions', fetchTodaysSessions);
 app.post('/generate-token', verifyToken, (req, res) =>
   createRoom(req as unknown as AuthenticatedRequest, res)
 );
+app.post('/get-token', getStoredToken)
 
 
 // ✅ Apollo Server setup

@@ -1,10 +1,28 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Request, Response as ExpressResponse } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
 dotenv.config();
-const managementToken = process.env.Management_Token;
 const templateId = process.env.Template_Id;
+
+const generateManagementToken = () => {
+  if (!process.env.HMS_ACCESS_KEY || !process.env.HMS_SECRET) {
+    throw new Error('Missing HMS_ACCESS_KEY or HMS_SECRET in environment');
+  }
+
+  const payload = {
+    access_key: process.env.HMS_ACCESS_KEY,
+    type: 'management',
+    version: 2,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + 60 * 60, // 1 hour expiry
+    jti: uuidv4(), // unique JWT ID
+  };
+
+  return jwt.sign(payload, process.env.HMS_SECRET);
+};
+
 
 export interface AuthenticatedRequest extends Request {
   user?: any;
@@ -16,6 +34,7 @@ export interface AuthenticatedRequest extends Request {
 
 export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse) => {
   try {
+    const managementToken = generateManagementToken();
     const response = await fetch('https://api.100ms.live/v2/rooms', {
       method: 'POST',
       headers: {
@@ -31,6 +50,7 @@ export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.log("from create room: ", errorText);
       return res.status(response.status).json({ error: errorText });
     }
 
@@ -40,7 +60,14 @@ export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse
     let therapistToken = await generateUserToken(data.id, req.user.id, req.user.role);
     console.log('patient token: ', patientToken);
     console.log('therapist token: ', therapistToken);
-    return res.status(201).json({ therapistToken, roomId: data.id });
+    res.cookie('vc_token', therapistToken, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000,
+      sameSite: 'strict',
+      secure: true
+    });
+    res.status(201).json({ message: 'Token sent Successfully' });
+
 
   } catch (error) {
     console.error('❌ Error creating room:', error);

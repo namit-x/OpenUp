@@ -92,8 +92,7 @@ export const login = async (req: Request, res: Response) => {
         id: exists._id,
       }
       const secretKey = process.env.Secret_Key as string;
-      console.log('Secret Key: ', secretKey)
-      if (secretKey) {
+      if (!secretKey) {
         console.log('Sceret key is empty');
       }
       const token = jwt.sign(payload, secretKey, { expiresIn: "15D" });

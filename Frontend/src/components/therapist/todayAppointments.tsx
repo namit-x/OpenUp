@@ -8,12 +8,13 @@ import {
   TableHead,
   TableRow
 } from "../ui/table";
-import { Clock } from "lucide-react";
+import { Clock, Coffee } from "lucide-react";
 import { useIsMobile } from "../../hooks/use-mobile";
 import { fetchDetails } from '../../lib/utils';
+// import { useNavigate } from 'react-router'
 // import { useVC } from '../contexts/VCContext';
 
-const skeletonArray = Array.from({ length: 3 });
+// const skeletonArray = Array.from({ length: 3 });
 
 type Appointment = {
   name: string;
@@ -22,11 +23,10 @@ type Appointment = {
   patientID: string;
 };
 
-
-const TodayAppointments = () => {
+const appointments = () => {
   const isMobile = useIsMobile();
+  // const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>();
-  const [loading, setLoading] = useState(true);
   // const { joinRoom, state } = useVC();
 
   useEffect(() => {
@@ -41,7 +41,6 @@ const TodayAppointments = () => {
       });
       let response = await res.json();
       setAppointments(response.todaySessionsObj);
-      setLoading(false);
     };
     fetchSession();
   }, []);
@@ -55,18 +54,50 @@ const TodayAppointments = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',
         body: JSON.stringify({ pid }),
+        credentials: 'include',
       });
-      let data = await res.json();
-    
+      let data1 = await res.json();
+
       if (!res.ok) {
-        console.log("Message: ", data.error);
+        console.log("Message: ", data1.error);
         throw new Error(`Server responded with status ${res.status}`);
       }
+
+      const response = await fetch('http://localhost:5000/get-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+      let token = await response.json();
+      sessionStorage.setItem('vc_token', token.token);
+      console.log('Therapist\'s token: ', token.token);
     } catch (error) {
       console.error('Internal server error:', error);
     }
+  }
+
+  // Show empty state when no appointments are scheduled
+  if (appointments?.length === 0) {
+    return (
+      <Card className="bg-[#1e293b] border-gray-700 h-full">
+        <CardContent className="p-8 text-center flex flex-col justify-center h-full">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-16 h-16 bg-teal-400/20 rounded-full flex items-center justify-center">
+              <Coffee className="h-8 w-8 text-teal-400" />
+            </div>
+            <h3 className="text-xl font-medium text-gray-300">
+              Phew, nothing today!
+            </h3>
+            <p className="text-gray-400 max-w-md">
+              No sessions scheduled for today. Time to take a break or catch up on your notes.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   return (
@@ -79,83 +110,61 @@ const TodayAppointments = () => {
       </CardHeader>
       <CardContent>
         {isMobile ? (
+          // Mobile view - card style list
           <div className="space-y-3">
-            {loading ? (
-              skeletonArray.map((_, i) => (
-                <div key={i} className="p-3 bg-[#283548] rounded-lg border border-gray-700 animate-pulse space-y-2">
-                  <div className="flex justify-between items-center">
-                    <div className="h-4 bg-gray-600 rounded w-1/2" />
-                    <div className="h-4 bg-gray-600 rounded w-1/4" />
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <div className="h-4 bg-gray-600 rounded w-1/3" />
-                    <div className="h-6 bg-gray-500 rounded w-16" />
-                  </div>
+            {appointments?.map((appointment) => (
+              <div
+                key={appointment.patientID}
+                className="p-3 bg-[#283548] rounded-lg border border-gray-700 flex flex-col space-y-2"
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-gray-300">{appointment.name}</span>
+                  <span className="text-xs bg-teal-400/20 text-teal-300 px-2 py-1 rounded">
+                    {appointment.type}
+                  </span>
                 </div>
-              ))
-            ) : (
-              appointments?.map((appointment, index) => (
-                <div
-                  key={index}
-                  className="p-3 bg-[#283548] rounded-lg border border-gray-700 flex flex-col space-y-2"
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium text-gray-300">{appointment?.name}</span>
-                    <span className="text-xs bg-teal-400/20 text-teal-300 px-2 py-1 rounded">
-                      {appointment?.type}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">{appointment.time}</span>
-                    <button
-                      className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
-                      onClick={() => handleJoin(appointment.patientID)}
-                    >
-                      Join
-                    </button>
-                  </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-400">{appointment.time}</span>
+                  <button
+                    onClick={() => handleJoin(appointment.patientID)}
+                    className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
+                  >
+                    Join
+                  </button>
                 </div>
-              ))
-            )}
+              </div>
+            ))}
           </div>
         ) : (
+          // Desktop view - table with more space
           <div className="bg-[#283548] rounded-md p-4">
             <Table>
               <TableHeader>
                 <TableRow className="border-gray-700">
-                  <TableHead className="text-gray-400">Name</TableHead>
+                  <TableHead className="text-gray-400">Patient</TableHead>
                   <TableHead className="text-gray-400">Time</TableHead>
                   <TableHead className="text-gray-400">Type</TableHead>
                   <TableHead className="text-gray-400">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {loading ? (
-                  skeletonArray.map((_, i) => (
-                    <TableRow key={i} className="border-gray-700 animate-pulse">
-                      <TableCell><div className="h-4 bg-gray-600 rounded w-24" /></TableCell>
-                      <TableCell><div className="h-4 bg-gray-600 rounded w-16" /></TableCell>
-                      <TableCell><div className="h-4 bg-gray-600 rounded w-12" /></TableCell>
-                      <TableCell><div className="h-6 bg-gray-500 rounded w-20" /></TableCell>
-                    </TableRow>
-                  ))
-                ) : (
-                  appointments?.map((appointment, index) => (
-                    <TableRow key={index} className="border-gray-700">
-                      <TableCell className="font-medium text-gray-300">{appointment.name}</TableCell>
-                      <TableCell className="text-gray-300">{appointment.time}</TableCell>
-                      <TableCell className="text-gray-300">{appointment.type}</TableCell>
-                      <TableCell>
-                        <button
-                          className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
-                          onClick={() => handleJoin(appointment.patientID)}
-                        >
-                          Join
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
+                {appointments?.map((appointment) => (
+                  <TableRow key={appointment.patientID} className="border-gray-700">
+                    <TableCell className="font-medium text-gray-300">
+                      {appointment.name}
+                    </TableCell>
+                    <TableCell className="text-gray-300">{appointment.time}</TableCell>
+                    <TableCell className="text-gray-300">{appointment.type}</TableCell>
+                    <TableCell>
+                      <button
+                        onClick={() => handleJoin(appointment.patientID)}
+                        className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
+                      >
+                        Join
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>
@@ -165,4 +174,4 @@ const TodayAppointments = () => {
   );
 };
 
-export default TodayAppointments;
+export default appointments;
