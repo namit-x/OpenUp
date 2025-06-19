@@ -24,7 +24,6 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
     }
 
     req.user = decoded;
-    console.log(decoded);
     next();
   });
 };

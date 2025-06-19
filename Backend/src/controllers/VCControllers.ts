@@ -1,6 +1,6 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { Response as ExpressResponse } from 'express';
+import { Request, Response as ExpressResponse } from 'express';
 
 dotenv.config();
 const managementToken = process.env.Management_Token;
@@ -8,6 +8,10 @@ const templateId = process.env.Template_Id;
 
 export interface AuthenticatedRequest extends Request {
   user?: any;
+  body: {
+    pid?: string;
+    [key: string]: any;
+  };
 }
 
 export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse) => {
@@ -32,12 +36,11 @@ export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse
 
     const data: any = await response.json();
 
-    // console.log("Body: ", req.body?.pid);
-    let patientToken = await generateUserToken(data.id, req.body?.pid, 'patient');
+    let patientToken = await generateUserToken(data.id, req.body?.pid ?? '', 'patient');
     let therapistToken = await generateUserToken(data.id, req.user.id, req.user.role);
     console.log('patient token: ', patientToken);
     console.log('therapist token: ', therapistToken);
-    return res.status(201).json({ room: data });
+    return res.status(201).json({ therapistToken, roomId: data.id });
 
   } catch (error) {
     console.error('❌ Error creating room:', error);
@@ -50,6 +53,9 @@ export const generateUserToken = (
   userId: string,
   role: string,
 ): string => {
+  if (!userId || !roomId || !role) {
+    throw new Error('Invalid details, token can\'t be generated.');
+  }
   const ACCESS_KEY = process.env.HMS_ACCESS_KEY;
   const SECRET_KEY = process.env.HMS_SECRET;
 
