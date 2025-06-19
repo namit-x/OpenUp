@@ -8,5 +8,8 @@
     "cursor.experimental.suggestions.enabled": false,
     "github.copilot.enable": {
         "*": false
-    }
+    },
+    "cSpell.words": [
+        "openup"
+    ]
 }

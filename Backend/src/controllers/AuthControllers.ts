@@ -88,6 +88,8 @@ export const login = async (req: Request, res: Response) => {
       const payload = {
         phone: exists.phone,
         name: exists.fullName,
+        role: exists.role,
+        id: exists._id,
       }
       const secretKey = process.env.Secret_Key as string;
       console.log('Secret Key: ', secretKey)

@@ -11,7 +11,7 @@ import {
 import { Clock } from "lucide-react";
 import { useIsMobile } from "../../hooks/use-mobile";
 import { fetchDetails } from '../../lib/utils';
-import { useVC } from '../contexts/VCContext';
+// import { useVC } from '../contexts/VCContext';
 
 const skeletonArray = Array.from({ length: 3 });
 
@@ -19,6 +19,7 @@ type Appointment = {
   name: string;
   time: string;
   type: string;
+  patientID: string;
 };
 
 
@@ -27,17 +28,6 @@ const TodayAppointments = () => {
   const [appointments, setAppointments] = useState<Appointment[]>();
   const [loading, setLoading] = useState(true);
   // const { joinRoom, state } = useVC();
-
-  const handleJoin = async ()=> {
-
-    let res = await fetch('http://localhost:5000/generate-token', {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      credentials: 'include',
-    })
-  }
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -50,12 +40,34 @@ const TodayAppointments = () => {
         body: JSON.stringify({ details }),
       });
       let response = await res.json();
-      console.log(response);
       setAppointments(response.todaySessionsObj);
       setLoading(false);
     };
     fetchSession();
   }, []);
+
+  const handleJoin = async (pid: string)=> {
+    console.log("Appointments: ", appointments);
+
+    try {
+      const res = await fetch('http://localhost:5000/generate-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ pid }),
+      });
+      let data = await res.json();
+    
+      if (!res.ok) {
+        console.log("Message: ", data.error);
+        throw new Error(`Server responded with status ${res.status}`);
+      }
+    } catch (error) {
+      console.error('Internal server error:', error);
+    }
+  }
 
   return (
     <Card className="bg-[#1e293b] border-gray-700 h-full">
@@ -97,7 +109,7 @@ const TodayAppointments = () => {
                     <span className="text-sm text-gray-400">{appointment.time}</span>
                     <button
                       className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
-                      onClick={() => { console.log("Join clicked"); }}
+                      onClick={() => handleJoin(appointment.patientID)}
                     >
                       Join
                     </button>
@@ -136,7 +148,7 @@ const TodayAppointments = () => {
                       <TableCell>
                         <button
                           className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
-                          onClick={() => { console.log("Join clicked"); }}
+                          onClick={() => handleJoin(appointment.patientID)}
                         >
                           Join
                         </button>

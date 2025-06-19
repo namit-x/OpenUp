@@ -1,17 +1,17 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { Response as ExpressResponse } from 'express';
 
 dotenv.config();
 const managementToken = process.env.Management_Token;
 const templateId = process.env.Template_Id;
 
 export interface AuthenticatedRequest extends Request {
-  user?: any;  // you can replace `any` with a specific user type if you want
+  user?: any;
 }
 
-export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
+export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse) => {
   try {
-    console.log(req.user)
     const response = await fetch('https://api.100ms.live/v2/rooms', {
       method: 'POST',
       headers: {
@@ -25,17 +25,30 @@ export const createRoom = async (req: AuthenticatedRequest, res: Response) => {
       }),
     });
 
-    const data = await response.json();
-    // generateUserToken(data.id, );
+    if (!response.ok) {
+      const errorText = await response.text();
+      return res.status(response.status).json({ error: errorText });
+    }
+
+    const data: any = await response.json();
+
+    // console.log("Body: ", req.body?.pid);
+    let patientToken = await generateUserToken(data.id, req.body?.pid, 'patient');
+    let therapistToken = await generateUserToken(data.id, req.user.id, req.user.role);
+    console.log('patient token: ', patientToken);
+    console.log('therapist token: ', therapistToken);
+    return res.status(201).json({ room: data });
+
   } catch (error) {
     console.error('❌ Error creating room:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 export const generateUserToken = (
   roomId: string,
   userId: string,
-  role: string
+  role: string,
 ): string => {
   const ACCESS_KEY = process.env.HMS_ACCESS_KEY;
   const SECRET_KEY = process.env.HMS_SECRET;

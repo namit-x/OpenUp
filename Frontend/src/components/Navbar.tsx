@@ -118,8 +118,8 @@ const Navbar = () => {
                       >
                         <button
                           onClick={() => {
-                            navigate('/profile');
                             setShowDropdown(false);
+                            handleProfileClick();
                           }}
                           className="flex items-center gap-2 px-4 py-2 text-[16px] text-black hover:bg-gray-50 w-full text-left"
                         >

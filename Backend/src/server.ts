@@ -14,7 +14,7 @@ import { details } from './controllers/DetailsController';
 import { verifyToken } from './controllers/AuthMiddleware';
 import { therapistData } from './controllers/TherapistDataController';
 import { bookSession, fetchTodaysSessions } from './controllers/sessionManager';
-import { createRoom } from './controllers/VCControllers'
+import { createRoom, AuthenticatedRequest } from './controllers/VCControllers'
 
 dotenv.config();
 connectDB();
@@ -39,7 +39,9 @@ app.post('/details', verifyToken, details);
 app.post('/therapistData', therapistData);
 app.post('/bookSession', bookSession);
 app.post('/fetchTodaysSessions', fetchTodaysSessions);
-app.post('/generate-token', verifyToken, createRoom);
+app.post('/generate-token', verifyToken, (req, res) =>
+  createRoom(req as unknown as AuthenticatedRequest, res)
+);
 
 
 // ✅ Apollo Server setup

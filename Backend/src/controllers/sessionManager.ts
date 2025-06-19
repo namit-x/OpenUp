@@ -39,10 +39,9 @@ export const bookSession = async (req: Request, res: Response) => {
   }
 
   const therapistId = req.body.therapistId;
-  // console.log(therapistId);
   let patient = await User.findOne({ phone: req.body.patientPhone })
   const patientId = patient?.id;
-  // console.log(patientId);
+
   const timeSlot = req.body?.selectedSlot;
   const date = getFormattedDate(req.body?.selectedDate);
 
@@ -53,14 +52,13 @@ export const bookSession = async (req: Request, res: Response) => {
   else {
     let newSession = new Session({ therapistId, patientId, scheduledTime: timeSlot, scheduledDay: date, status: 'scheduled' });
     await newSession.save();
-    // console.log(`PatientId: ${patientId} booked TherapistID: ${therapistId} on ${date} at ${timeSlot}`);
+
     res.status(200).send('Session booked successfully.');
   }
 }
 
 export const fetchAllSessions = async (id: Object) => {
 
-  console.log("Therapist ID: ", id.toString());
   const sessions: any = await Session.find({ therapistId: id.toString() });
   return sessions;
 }
@@ -99,20 +97,17 @@ export const fetchTodaysSessions = async (req: Request, res: Response) => {
   const sessions = await fetchAllSessions(_id);
   let todaySessions = [];
   for (let i = 0; i < sessions.length; i++) {
-    console.log(`Passed date: ${sessions[i].scheduledDay}, isToday: ${isToday(sessions[i].scheduledDay)}`)
     if (isToday(sessions[i].scheduledDay)) {
       todaySessions.push(sessions[i]);
     }
-    // console.log("Scheduled date: ", sessions[i].scheduledDay);
+
   }
-  console.log("Today's sessions", todaySessions);
   let todaySessionsObj = [];
 
   for (let i = 0; i < todaySessions.length; i++) {
     let id = todaySessions[i].patientId.toString();
     let patient = await User.findOne({_id:id});
-    // console.log("Patient: ", patient);
-    todaySessionsObj.push({name: patient?.fullName, time: todaySessions[i].scheduledTime, type: 'Video'})
+    todaySessionsObj.push({name: patient?.fullName, patientID: id, time: todaySessions[i].scheduledTime, type: 'Video'})
 
   }
   res.json({todaySessionsObj});
