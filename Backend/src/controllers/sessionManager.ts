@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import User from '../models/User';
 import Session from '../models/Session'
+import { AuthenticatedRequest } from '../controllers/VCControllers'
 
 export interface SessionInt {
   patientId: string;
@@ -90,17 +91,14 @@ const isToday = (dateStr: string) => {
   );
 };
 
-export const fetchTodaysSessions = async (req: Request, res: Response) => {
-  const phone = req.body.details.phone;
-  const therapist: any = await User.findOne({ phone });
-  const { _id } = therapist;
-  const sessions = await fetchAllSessions(_id);
+export const fetchTodaysSessions = async (req: AuthenticatedRequest, res: Response) => {
+  const id = req.user.id;
+  const sessions = await fetchAllSessions(id);
   let todaySessions = [];
   for (let i = 0; i < sessions.length; i++) {
     if (isToday(sessions[i].scheduledDay)) {
       todaySessions.push(sessions[i]);
     }
-
   }
   let todaySessionsObj = [];
 
@@ -108,7 +106,36 @@ export const fetchTodaysSessions = async (req: Request, res: Response) => {
     let id = todaySessions[i].patientId.toString();
     let patient = await User.findOne({_id:id});
     todaySessionsObj.push({name: patient?.fullName, patientID: id, time: todaySessions[i].scheduledTime, type: 'Video'})
-
   }
   res.json({todaySessionsObj});
 }
+
+export const fetchPatientSessions = async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const id = req.user.id;
+
+    // Fetch all sessions for the patient
+    const sessions = await Session.find({ patientId: id });
+
+    // Prepare Meeting objects
+    const meetingPromises = sessions.map(async (session) => {
+      const therapist = await User.findById(session.therapistId);
+
+      return {
+        id: session._id.toString(),
+        therapistName: therapist?.fullName || 'Unknown Therapist',
+        therapistImage: therapist?.profilePicUrl || '',
+        date: session.scheduledDay,
+        time: session.scheduledTime,
+        type: therapist?.availableVia?.[0] === 'Voice' ? 'Voice' : 'Video'
+      };
+    });
+
+    const meetings = await Promise.all(meetingPromises);
+    res.status(200).json({ meetings });
+
+  } catch (error) {
+    console.error('Error fetching sessions:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

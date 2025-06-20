@@ -2,9 +2,18 @@ import jwt, { SignOptions } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Request, Response as ExpressResponse } from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import { storePatientToken } from '../controllers/tokenStorage'
 
 dotenv.config();
 const templateId = process.env.Template_Id;
+
+export interface AuthenticatedRequest extends Request {
+  user?: any;
+  body: {
+    pid?: string;
+    [key: string]: any;
+  };
+}
 
 const generateManagementToken = () => {
   if (!process.env.HMS_ACCESS_KEY || !process.env.HMS_SECRET) {
@@ -22,15 +31,6 @@ const generateManagementToken = () => {
 
   return jwt.sign(payload, process.env.HMS_SECRET);
 };
-
-
-export interface AuthenticatedRequest extends Request {
-  user?: any;
-  body: {
-    pid?: string;
-    [key: string]: any;
-  };
-}
 
 export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse) => {
   try {
@@ -57,9 +57,10 @@ export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse
     const data: any = await response.json();
 
     let patientToken = await generateUserToken(data.id, req.body?.pid ?? '', 'patient');
+    await storePatientToken(req.body.pid ?? '', patientToken);
+
     let therapistToken = await generateUserToken(data.id, req.user.id, req.user.role);
-    console.log('patient token: ', patientToken);
-    console.log('therapist token: ', therapistToken);
+
     res.cookie('vc_token', therapistToken, {
       httpOnly: true,
       maxAge: 60 * 60 * 1000,

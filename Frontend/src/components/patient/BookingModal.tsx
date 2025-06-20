@@ -65,10 +65,12 @@ const BookingModal: React.FC<BookingModalProps> = ({
         "Content-Type" : "application/json",
       },
       body: JSON.stringify({therapistId, patientPhone, selectedDate, selectedSlot}),
+      credentials: 'include',
     });
     let response = await res.text();
+    console.log(response);
+    setIsBookingModalOpen(false);
     if (res.ok) {
-      setIsBookingModalOpen(false);
       toast({
         title: "Booked!",
         description: response,
@@ -76,7 +78,6 @@ const BookingModal: React.FC<BookingModalProps> = ({
       });
     }
     else {
-      setIsBookingModalOpen(false);
       toast({
         title: "Booked!",
         description: "Unexpected error ocurred",

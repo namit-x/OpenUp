@@ -38,8 +38,10 @@ const appointments = () => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({ details }),
+        credentials: 'include',
       });
       let response = await res.json();
+      // console.log(response.todaySessionsObj);
       setAppointments(response.todaySessionsObj);
     };
     fetchSession();
@@ -73,7 +75,6 @@ const appointments = () => {
       });
       let token = await response.json();
       sessionStorage.setItem('vc_token', token.token);
-      console.log('Therapist\'s token: ', token.token);
     } catch (error) {
       console.error('Internal server error:', error);
     }

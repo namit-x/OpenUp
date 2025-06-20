@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../controllers/VCControllers'
 
-export const getStoredToken = (req: Request, res: Response) => {
-  const token = req.cookies['vc_token'];
-  if (!token) return res.status(401).json({ message: 'Token expired or missing' });
-  return res.status(200).json({ token });
+export const getStoredToken = (req: AuthenticatedRequest, res: Response) => {
+  console.log(req.user.id)
 };

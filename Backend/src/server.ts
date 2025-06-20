@@ -13,7 +13,7 @@ import { login, logout, signup } from './controllers/AuthControllers';
 import { details } from './controllers/DetailsController';
 import { verifyToken } from './controllers/AuthMiddleware';
 import { therapistData } from './controllers/TherapistDataController';
-import { bookSession, fetchTodaysSessions } from './controllers/sessionManager';
+import { bookSession, fetchTodaysSessions, fetchPatientSessions } from './controllers/sessionManager';
 import { createRoom, AuthenticatedRequest } from './controllers/VCControllers'
 import { getStoredToken } from './controllers/token';
 
@@ -37,14 +37,14 @@ app.post('/signup', signup);
 app.post('/signin', login);
 app.post('/logout', logout);
 app.post('/details', verifyToken, details);
-app.post('/therapistData', therapistData);
-app.post('/bookSession', bookSession);
-app.post('/fetchTodaysSessions', fetchTodaysSessions);
+app.post('/therapistData', verifyToken, therapistData);
+app.post('/bookSession',verifyToken, bookSession);
+app.post('/fetchTodaysSessions',verifyToken, fetchTodaysSessions);
 app.post('/generate-token', verifyToken, (req, res) =>
   createRoom(req as unknown as AuthenticatedRequest, res)
 );
-app.post('/get-token', getStoredToken)
-
+app.post('/get-token', verifyToken, getStoredToken);
+app.post('/fetchScheduledMeetings', verifyToken, fetchPatientSessions);
 
 // ✅ Apollo Server setup
 const server = new ApolloServer({
