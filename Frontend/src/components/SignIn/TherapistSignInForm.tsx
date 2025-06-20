@@ -76,7 +76,6 @@ export const TherapistSignInForm: React.FC<TherapistSignInFormProps> = ({ onBack
     }
 
     setLoading(false);
-    console.log("Therapist successfully signed in");
 
   };
 

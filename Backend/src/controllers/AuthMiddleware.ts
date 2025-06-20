@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
-  const token = req.cookies?.AuthToken;
+  const token = req.cookies?.TAuthToken || req.cookies?.PAuthToken;
 
   if (!token) {
     res.status(403).json({ error: "cookie not found" });

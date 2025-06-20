@@ -27,6 +27,7 @@ const appointments = () => {
   const isMobile = useIsMobile();
   // const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>();
+  const [tokenFormed, setTokenFormed] = useState<boolean>(false);
   // const { joinRoom, state } = useVC();
 
   useEffect(() => {
@@ -49,7 +50,6 @@ const appointments = () => {
 
   const handleJoin = async (pid: string)=> {
     console.log("Appointments: ", appointments);
-
     try {
       const res = await fetch('http://localhost:5000/generate-token', {
         method: 'POST',
@@ -60,21 +60,27 @@ const appointments = () => {
         credentials: 'include',
       });
       let data1 = await res.json();
-
-      if (!res.ok) {
+// TODO: bhai something is here.
+      if (res.ok) {
+        setTokenFormed(true);
+        let res = await fetch('http://localhost:5000/get-token', {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          credentials: 'include',
+        });
+        let data = await res.json();
+        console.log('Therapist Token Received: ', data);
+        if (data.token) {
+          setTokenFormed(true);
+        }
+        console.log('Token received: ', data);
+      }
+      else {
         console.log("Message: ", data1.error);
         throw new Error(`Server responded with status ${res.status}`);
       }
-
-      const response = await fetch('http://localhost:5000/get-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      });
-      let token = await response.json();
-      sessionStorage.setItem('vc_token', token.token);
     } catch (error) {
       console.error('Internal server error:', error);
     }
@@ -130,7 +136,7 @@ const appointments = () => {
                     onClick={() => handleJoin(appointment.patientID)}
                     className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
                   >
-                    Join
+                    {tokenFormed? 'Join' : 'Initialize Meeting'}
                   </button>
                 </div>
               </div>

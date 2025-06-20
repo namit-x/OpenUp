@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent} from "../../components/ui/card";
 import { Button } from "../../components/ui/Button";
 import { Calendar, Clock, Video, User } from 'lucide-react';
@@ -7,46 +7,18 @@ import { useNavigate } from 'react-router-dom';
 interface Meeting {
   id: string;
   therapistName: string;
-  therapistImage: string;
   date: string;
   time: string;
   type: 'Video' | 'Voice';
 }
 
-// Mock data for scheduled meetings
-const mockMeetings: Meeting[] = [
-  {
-    id: '1',
-    therapistName: 'Dr. Sarah Johnson',
-    therapistImage: '/placeholder.svg',
-    date: '2024-01-15',
-    time: '10:00 AM',
-    type: 'Video',
-  },
-  {
-    id: '2',
-    therapistName: 'Dr. Michael Chen',
-    therapistImage: '/placeholder.svg',
-    date: '2024-01-18',
-    time: '2:30 PM',
-    type: 'Voice',
-  },
-  {
-    id: '3',
-    therapistName: 'Dr. Emily Rodriguez',
-    therapistImage: '/placeholder.svg',
-    date: '2024-01-12',
-    time: '11:00 AM',
-    type: 'Video',
-  }
-];
-
 interface ScheduledMeetingsProps {
   patientPhone: string;
 }
 
-const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = ({ patientPhone }) => {
+const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
   const navigate = useNavigate();
+  const [ScheduledMeetings, setScheduledMeetings] = useState<Meeting[]>([]);
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -57,16 +29,24 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = ({ patientPhone }) =
         },
         credentials: 'include',
       });
+      let data = await res.json();
+      setScheduledMeetings(data.meetings);
     }
     fetchMeetings();
   }, []);
 
-  const handleJoinMeeting = (meeting: Meeting) => {
-    console.log('Joining meeting with:', meeting.therapistName);
-    navigate('/video-call');
+  const handleJoinMeeting = async () => {
+    console.log('You pressed join');
+    let res = await fetch('http://localhost:5000/get-token', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: 'include',
+    });
+    let data = await res.json();
+    console.log('Token Received: ', data);
   };
-
-  const upcomingMeetings = mockMeetings;
 
   return (
     <div className="space-y-8">
@@ -77,7 +57,7 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = ({ patientPhone }) =
       {/* Upcoming Meetings */}
       <div>
         <h2 className="text-xl font-medium text-gray-300 mb-4">Upcoming Sessions</h2>
-        {upcomingMeetings.length === 0 ? (
+        {ScheduledMeetings.length === 0 ? (
           <Card className="bg-[#1e293b] border-gray-700">
             <CardContent className="p-8 text-center">
               <Calendar className="h-12 w-12 text-gray-500 mx-auto mb-4" />
@@ -86,7 +66,7 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = ({ patientPhone }) =
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {upcomingMeetings.map((meeting) => (
+            {ScheduledMeetings.map((meeting) => (
               <Card key={meeting.id} className="bg-[#1e293b] border-gray-700">
                 <CardContent className="p-6">
                   <div className="flex items-start space-x-4">
@@ -98,12 +78,7 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = ({ patientPhone }) =
                       <div className="space-y-2 text-sm text-gray-400">
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
-                          <span>{new Date(meeting.date).toLocaleDateString('en-US', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}</span>
+                          <span>{meeting.date}</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4" />
@@ -116,7 +91,7 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = ({ patientPhone }) =
                       </div>
                       <div className="mt-4 flex space-x-2">
                         <Button
-                          onClick={() => handleJoinMeeting(meeting)}
+                          onClick={() => handleJoinMeeting()}
                           className="bg-teal-400 hover:bg-teal-500 text-gray-900 font-medium"
                         >
                           Join Session

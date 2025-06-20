@@ -95,12 +95,22 @@ export const login = async (req: Request, res: Response) => {
       }
       const token = jwt.sign(payload, secretKey, { expiresIn: "15D" });
 
-      res.cookie('AuthToken', token, {
-        httpOnly: true,
-        secure: true,
-        maxAge: 15 * 24 * 60 * 60 * 1000,
-        sameSite: "lax",
-      })
+      if (exists.role === 'therapist') {
+        res.cookie('TAuthToken', token, {
+          httpOnly: true,
+          secure: true,
+          maxAge: 15 * 24 * 60 * 60 * 1000,
+          sameSite: "lax",
+        })
+      }
+      else {
+        res.cookie('PAuthToken', token, {
+          httpOnly: true,
+          secure: true,
+          maxAge: 15 * 24 * 60 * 60 * 1000,
+          sameSite: "lax",
+        })
+      }
 
       res.status(201).json({
         message: "Verified",
@@ -114,10 +124,16 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const logout = (req: Request, res: Response) => {
-  res.clearCookie("AuthToken", {
+  res.clearCookie("TAuthToken", {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
   });
+  res.clearCookie("PAuthToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "lax",
+  });
+  
   res.status(200).json({ message: "Logged out" });
 }

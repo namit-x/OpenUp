@@ -2,7 +2,7 @@ import jwt, { SignOptions } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Request, Response as ExpressResponse } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { storePatientToken } from '../controllers/tokenStorage'
+import { storeToken } from '../controllers/tokenStorage'
 
 dotenv.config();
 const templateId = process.env.Template_Id;
@@ -53,22 +53,13 @@ export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse
       console.log("from create room: ", errorText);
       return res.status(response.status).json({ error: errorText });
     }
-
     const data: any = await response.json();
 
     let patientToken = await generateUserToken(data.id, req.body?.pid ?? '', 'patient');
-    await storePatientToken(req.body.pid ?? '', patientToken);
-
+    await storeToken(req.body.pid ?? '', patientToken);
+    
     let therapistToken = await generateUserToken(data.id, req.user.id, req.user.role);
-
-    res.cookie('vc_token', therapistToken, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 1000,
-      sameSite: 'strict',
-      secure: true
-    });
-    res.status(201).json({ message: 'Token sent Successfully' });
-
+    await storeToken(req.user.id ?? '', therapistToken);
 
   } catch (error) {
     console.error('❌ Error creating room:', error);

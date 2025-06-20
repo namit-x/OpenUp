@@ -1,16 +1,18 @@
-const patientTokenStore: { patientId: string; token: string }[] = [];
+const tokenStore: { id: string; token: string }[] = [];
 
 // Store token
-export const storePatientToken = (patientId: string, token: string) => {
+export const storeToken = (id: string, token: string) => {
   // Remove existing token if exists
-  const index = patientTokenStore.findIndex(t => t.patientId === patientId);
-  if (index !== -1) patientTokenStore.splice(index, 1);
-
-  patientTokenStore.push({ patientId, token });
+  const index = tokenStore.findIndex(t => t.id === id);
+  if (index !== -1) tokenStore.splice(index, 1);
+  tokenStore.push({ id, token });
 };
 
 // Retrieve token
-export const getPatientToken = (patientId: string): string | undefined => {
-  const entry = patientTokenStore.find(t => t.patientId === patientId);
-  return entry?.token;
+export const getToken = (id: string): string | undefined => {
+  const entry: any = tokenStore.find(t => String(t.id) === String(id));
+  if (!entry) {
+    throw new Error('No token available');
+  }
+  return entry;
 };
