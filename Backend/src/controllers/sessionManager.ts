@@ -123,8 +123,7 @@ export const fetchPatientSessions = async (req: AuthenticatedRequest, res: Respo
 
       return {
         id: session._id.toString(),
-        therapistName: therapist?.fullName || 'Unknown Therapist',
-        therapistImage: therapist?.profilePicUrl || '',
+        therapistName: therapist?.fullName || '',
         date: session.scheduledDay,
         time: session.scheduledTime,
         type: therapist?.availableVia?.[0] === 'Voice' ? 'Voice' : 'Video'

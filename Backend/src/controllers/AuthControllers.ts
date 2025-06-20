@@ -70,7 +70,6 @@ export const signup = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const data: loginData = req.body;
-  console.log("Data received: ", data);
 
   let exists = await User.findOne({ phone: data.phone }).exec();
 
@@ -82,7 +81,6 @@ export const login = async (req: Request, res: Response) => {
   }
   else {
     const isMatch: Boolean = await argon2.verify(exists.password, data.password);
-    console.log("Password matched? ", isMatch);
 
     if (isMatch) {
       const payload = {
@@ -116,7 +114,6 @@ export const login = async (req: Request, res: Response) => {
 }
 
 export const logout = (req: Request, res: Response) => {
-  console.log("Request reachedd!");
   res.clearCookie("AuthToken", {
     httpOnly: true,
     secure: true,
