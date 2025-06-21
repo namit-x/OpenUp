@@ -39,6 +39,7 @@ interface VCContextType {
   toggleVideo: () => Promise<void>;
   toggleAudio: () => Promise<void>;
   setParticipants: (participants: VCParticipant[]) => void;
+  setToken: (token: string) => void;
 }
 
 const initialState: VCState = {
@@ -97,6 +98,11 @@ export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
       })),
     }));
   }, [roomState, localPeer, peers, isLocalAudioEnabled, isLocalVideoEnabled]);
+
+  const setToken = useCallback((token: string) => {
+    setState(prev => ({ ...prev, token }));
+    console.log("Token uploadded: ", token);
+  }, []);
 
   const joinRoom = useCallback(async (roomId: string, token: string, userName?: string) => {
     if (!hmsActions) {
@@ -189,6 +195,7 @@ export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
     toggleVideo,
     toggleAudio,
     setParticipants,
+    setToken,
   };
 
   return (

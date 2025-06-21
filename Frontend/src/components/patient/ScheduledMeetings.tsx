@@ -3,6 +3,7 @@ import { Card, CardContent} from "../../components/ui/card";
 import { Button } from "../../components/ui/Button";
 import { Calendar, Clock, Video, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useVC } from '../contexts/VCContext';
 
 interface Meeting {
   id: string;
@@ -19,6 +20,7 @@ interface ScheduledMeetingsProps {
 const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
   const navigate = useNavigate();
   const [ScheduledMeetings, setScheduledMeetings] = useState<Meeting[]>([]);
+  const { setToken } = useVC();
 
   useEffect(() => {
     const fetchMeetings = async () => {
@@ -36,7 +38,6 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
   }, []);
 
   const handleJoinMeeting = async () => {
-    console.log('You pressed join');
     let res = await fetch('http://localhost:5000/get-token', {
       method: 'POST',
       headers: {
@@ -45,7 +46,8 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
       credentials: 'include',
     });
     let data = await res.json();
-    console.log('Token Received: ', data);
+    setToken(data.data);
+    setTimeout(() => navigate('/joinVC'), 0);
   };
 
   return (

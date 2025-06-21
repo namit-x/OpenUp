@@ -11,10 +11,8 @@ import {
 import { Clock, Coffee } from "lucide-react";
 import { useIsMobile } from "../../hooks/use-mobile";
 import { fetchDetails } from '../../lib/utils';
-// import { useNavigate } from 'react-router'
-// import { useVC } from '../contexts/VCContext';
-
-// const skeletonArray = Array.from({ length: 3 });
+import { useNavigate } from 'react-router'
+import { useVC } from '../contexts/VCContext';
 
 type Appointment = {
   name: string;
@@ -25,10 +23,10 @@ type Appointment = {
 
 const appointments = () => {
   const isMobile = useIsMobile();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [appointments, setAppointments] = useState<Appointment[]>();
   const [tokenFormed, setTokenFormed] = useState<boolean>(false);
-  // const { joinRoom, state } = useVC();
+  const { setToken } = useVC();
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -48,42 +46,48 @@ const appointments = () => {
     fetchSession();
   }, []);
 
-  const handleJoin = async (pid: string)=> {
-    console.log("Appointments: ", appointments);
-    try {
-      const res = await fetch('http://localhost:5000/generate-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ pid }),
-        credentials: 'include',
-      });
-      let data1 = await res.json();
-// TODO: bhai something is here.
-      if (res.ok) {
-        setTokenFormed(true);
-        let res = await fetch('http://localhost:5000/get-token', {
+  const handleJoin = async (pid: string) => {
+    // console.log("Appointments: ", appointments);
+    if (!tokenFormed) {
+      try {
+        const res = await fetch('http://localhost:5000/generate-token', {
           method: 'POST',
           headers: {
-            "Content-Type": "application/json"
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({ pid }),
           credentials: 'include',
         });
         let data = await res.json();
-        console.log('Therapist Token Received: ', data);
-        if (data.token) {
+
+        if (res.ok) {
           setTokenFormed(true);
         }
-        console.log('Token received: ', data);
+        else {
+          console.log("Message: ", data.error);
+          throw new Error(`Server responded with status ${res.status}`);
+        }
+      } catch (error) {
+        console.error('Internal server error:', error);
       }
-      else {
-        console.log("Message: ", data1.error);
-        throw new Error(`Server responded with status ${res.status}`);
-      }
-    } catch (error) {
-      console.error('Internal server error:', error);
     }
+    else {
+      let data = await joinMeeting();
+      setToken(data.token);
+      setTimeout(() => navigate('/joinVC'), 0);
+    }
+  }
+
+  const joinMeeting = async () => {
+    let res = await fetch('http://localhost:5000/get-token', {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: 'include',
+    });
+    let data = await res.json();
+    return data.data;
   }
 
   // Show empty state when no appointments are scheduled
@@ -136,7 +140,7 @@ const appointments = () => {
                     onClick={() => handleJoin(appointment.patientID)}
                     className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
                   >
-                    {tokenFormed? 'Join' : 'Initialize Meeting'}
+                    {tokenFormed ? 'Initialize Meeting' : 'Initialize Meeting'}
                   </button>
                 </div>
               </div>
@@ -167,7 +171,7 @@ const appointments = () => {
                         onClick={() => handleJoin(appointment.patientID)}
                         className="bg-teal-400 text-gray-900 px-3 py-1 rounded-md text-sm hover:bg-teal-500"
                       >
-                        Join
+                        {tokenFormed ? 'Join' : 'Initialize Meeting'}
                       </button>
                     </TableCell>
                   </TableRow>
