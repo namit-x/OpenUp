@@ -27,13 +27,11 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
 
     try {
       const decoded: any = jwtDecode(state.token);
-      // const decodedAccessKey: any = jwtDecode(decoded.access_key);
-      console.log("Decoded: ", decoded);
-      console.log("Access Token: ", decoded);
+      // console.log("Decoded: ", decoded);
       setRoomId(decoded.room_id || '');
       setUserName(decoded.user_id || 'Anonymous');
     } catch (err) {
-      console.error('Invalid token:', err);
+      console.log('Invalid token:', err);
       toast({
         title: "Invalid token",
         description: "Could not decode the authentication token.",

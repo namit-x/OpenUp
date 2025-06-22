@@ -12,7 +12,7 @@ export const storeToken = (id: string, token: string) => {
 export const getToken = (id: string): string | undefined => {
   const entry: any = tokenStore.find(t => String(t.id) === String(id));
   if (!entry) {
-    throw new Error('No token available');
+    return undefined;
   }
   return entry;
 };

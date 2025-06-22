@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent} from "../../components/ui/card";
+import { Card, CardContent } from "../../components/ui/card";
 import { Button } from "../../components/ui/Button";
 import { Calendar, Clock, Video, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -38,6 +38,7 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
   }, []);
 
   const handleJoinMeeting = async () => {
+    console.log('Is it even triggerring?');
     let res = await fetch('http://localhost:5000/get-token', {
       method: 'POST',
       headers: {
@@ -46,8 +47,13 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
       credentials: 'include',
     });
     let data = await res.json();
-    setToken(data.data);
-    setTimeout(() => navigate('/joinVC'), 0);
+    if (!(data.message === "Joining meeting")) {
+      alert(data.message);
+    }
+    else {
+      setToken(data.data);
+      setTimeout(() => navigate('/joinVC'), 0);
+    }
   };
 
   return (

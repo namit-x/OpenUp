@@ -15,8 +15,10 @@ import {
   selectLocalVideoTrackID,
   selectLocalAudioTrackID,
   HMSPeer,
-  HMSTrack
+  selectTrackByID,
+  HMSTrack,
 } from '@100mslive/react-sdk';
+import { useMemo } from 'react';
 
 export const use100msStore = () => {
   // Connection state
@@ -40,29 +42,30 @@ export const use100msStore = () => {
   const localAudioTrackID = useHMSStore(selectLocalAudioTrackID);
 
   // Local tracks
-  const localVideoTrack: any = useHMSStore(selectVideoTrackByID(localVideoTrackID));
+  const localVideoTrack: any = useHMSStore(selectTrackByID(localVideoTrackID));
   const localAudioTrack = useHMSStore(selectAudioTrackByID(localAudioTrackID));
 
   // Dominant speaker
   const dominantSpeaker = useHMSStore(selectDominantSpeaker);
 
-  // Screen share detection
-  const getScreenShareByPeer = (peerId: string) =>
-    useHMSStore(selectScreenShareByPeerID(peerId));
+  // Memoized utility functions
+  const getScreenShareByPeer = useMemo(() => 
+    (peerId: string) => useHMSStore(selectScreenShareByPeerID(peerId)),
+    []
+  );
 
-  // Helper functions
   const getVideoTrack = (peer: HMSPeer) => {
-    const track = useHMSStore(selectVideoTrackByID(peer.videoTrack));
-    return track && track.enabled ? track : null;
+    const videoTrack = peer.videoTrack ? useHMSStore(selectVideoTrackByID(peer.videoTrack)) : null;
+    return videoTrack?.enabled ? videoTrack : null;
   };
   
   const getAudioTrack = (peer: HMSPeer) => {
-    const track = useHMSStore(selectAudioTrackByID(peer.audioTrack));
-    return track && track.enabled ? track : null;
+    const audioTrack = peer.audioTrack ? useHMSStore(selectAudioTrackByID(peer.audioTrack)) : null;
+    return audioTrack?.enabled ? audioTrack : null;
   };
 
-  const isTrackEnabled = (track: any) =>
-    track && track.enabled;
+  const isTrackEnabled = (track?: HMSTrack) => 
+    track?.enabled ?? false;
 
   return {
     // Connection

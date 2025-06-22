@@ -53,17 +53,17 @@ export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.log("from create room: ", errorText);
+      console.error("Error ocurred: ", errorText);
       return res.status(response.status).json({ error: errorText });
     }
-    const data: any = await response.json();
-
-    let patientToken = await generateUserToken(data.id, req.body?.pid ?? '', 'patient');
-    await storeToken(req.body.pid ?? '', patientToken);
-
-    let therapistToken = await generateUserToken(data.id, req.user.id, req.user.role);
-    await storeToken(req.user.id ?? '', therapistToken);
-    res.status(201).json({ message: "Token formed" });
+    else {
+      const data: any = await response.json();
+      let patientToken = await generateUserToken(data.id, req.body?.pid ?? '', 'patient');
+      await storeToken(req.body.pid ?? '', patientToken);
+      let therapistToken = await generateUserToken(data.id, req.user.id, req.user.role);
+      await storeToken(req.user.id ?? '', therapistToken);
+      return res.status(201).json({ message: "Token formed" });
+    }
 
   } catch (error) {
     console.error('❌ Error creating room:', error);
