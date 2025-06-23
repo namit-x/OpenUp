@@ -20,7 +20,6 @@ const generateManagementToken = () => {
   if (!process.env.HMS_ACCESS_KEY || !process.env.HMS_SECRET) {
     throw new Error('Missing HMS_ACCESS_KEY or HMS_SECRET in environment');
   }
-  // console.log("Generating management token");
   const payload = {
     access_key: process.env.HMS_ACCESS_KEY,
     type: 'management',

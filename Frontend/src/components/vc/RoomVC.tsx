@@ -38,6 +38,18 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    const handleBeforeUnload = async () => {
+      await leaveRoom();
+    };
+  
+    window.addEventListener("beforeunload", handleBeforeUnload);
+  
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [leaveRoom]);
+
+  useEffect(() => {
     navigator.permissions.query({ name: 'camera' as any })
       .then(status => console.log('Camera permission:', status.state));
   }, []);
@@ -48,7 +60,6 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
         console.log('Available devices:', devices.filter(d => d.kind === 'videoinput'));
       });
   }, []);
-  
 
   useEffect(() => {
     if (!localVideoRef.current || !localVideoTrack?.enabled) return;
@@ -204,7 +215,7 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
             {/* Local Video Overlay */}
             <div className="absolute bottom-4 left-4 bg-black/50 backdrop-blur-sm px-3 py-2 rounded-lg">
               <p className="text-white text-sm font-medium">
-                {localPeer?.name || 'You'} (Local)
+                {localPeer?.name || 'You'}
               </p>
             </div>
 

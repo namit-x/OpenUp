@@ -40,14 +40,12 @@ const appointments = () => {
         credentials: 'include',
       });
       let response = await res.json();
-      // console.log(response.todaySessionsObj);
       setAppointments(response.todaySessionsObj);
     };
     fetchSession();
   }, []);
 
   const handleJoin = async (pid: string) => {
-    // console.log("Appointments: ", appointments);
     if (!tokenFormed) {
       try {
         const res = await fetch('http://localhost:5000/generate-token', {

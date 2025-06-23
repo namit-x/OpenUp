@@ -51,7 +51,7 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
       alert(data.message);
     }
     else {
-      setToken(data.data);
+      setToken(data.data.token);
       setTimeout(() => navigate('/joinVC'), 0);
     }
   };

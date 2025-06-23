@@ -14,29 +14,74 @@ interface JoinVCProps {
 }
 
 const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
-  const { state, joinRoom, setToken } = useVC();
+  const { state, joinRoom, setToken, setState } = useVC();
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const [roomId, setRoomId] = useState('');
   const [userName, setUserName] = useState('');
   const [showToken, setShowToken] = useState(false);
 
+  console.log('State: ', state);
+
   useEffect(() => {
-    if (!state.token) {console.error("Token is not set"); return;};
+    const savedData = localStorage.getItem('vcData');
+    if (!savedData) return;
+
+    try {
+      const parsed = JSON.parse(savedData);
+
+      // Check expiration first
+      if (parsed.expiresAt && parsed.expiresAt <= Date.now()) {
+        localStorage.removeItem('vcData');
+        return;
+      }
+
+      // Set token from storage (triggers the decode flow)
+      if (parsed.token) {
+        setToken(parsed.token);
+      }
+
+      // Set username if available
+      if (parsed.userName) {
+        setUserName(parsed.userName);
+      }
+
+    } catch (err) {
+      console.error('Failed to parse saved session data', err);
+      localStorage.removeItem('vcData');
+      toast({
+        title: "Session Error",
+        description: "Could not load saved session",
+        variant: "destructive",
+      });
+    }
+  }, [setToken, toast]); // Add toast to dependencies
+
+  useEffect(() => {
+    if (!state.token) {
+      console.error("Token is not set");
+      return;
+    }
 
     try {
       const decoded: any = jwtDecode(state.token);
-      // console.log("Decoded: ", decoded);
-      setRoomId(decoded.room_id || '');
       setUserName(decoded.user_id || 'Anonymous');
+
+      localStorage.clear();
+
+      // Save token to localStorage when it changes
+      localStorage.setItem('vcData', JSON.stringify({
+        token: state.token,
+        userName: decoded.user_id || 'Anonymous',
+        roomId: decoded.room_id || ''
+      }));
     } catch (err) {
       console.log('Invalid token:', err);
       toast({
         title: "Invalid token",
         description: "Could not decode the authentication token.",
         variant: "destructive",
-        className:"bg-red-500 text-white"
+        className: "bg-red-500 text-white"
       });
     }
   }, [state.token, toast]);
@@ -44,22 +89,33 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
   const handleJoinRoom = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!roomId.trim() || !state.token?.trim()) {
+    if (!state.roomId?.trim() || !state.token?.trim()) {
       toast({
         title: "Missing Information",
         description: "Room ID or token is missing.",
         variant: "destructive",
-        className:"bg-white",
+        className: "bg-white",
       });
       return;
     }
 
     try {
-      await joinRoom(roomId.trim(), state.token.trim(), userName.trim() || undefined);
+      await joinRoom(state.roomId.trim(), state.token.trim(), userName.trim() || undefined);
+
+      localStorage.clear();
+      // Save successful join data
+      localStorage.setItem('vcData', JSON.stringify({
+        roomId: state.roomId,
+        token: state.token,
+        userName,
+        expiresAt: Date.now() + 3600000 // 1-hour expiry
+      }));
+
+
       toast({
         title: "Successfully Joined",
         description: "You have joined the video session",
-        className:"bg-white"
+        className: "bg-white"
       });
       onJoinSuccess();
       navigate('/roomVC');
@@ -71,7 +127,7 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPjwvZz48L2c+PC9zdmc+')] opacity-40"></div>
-      
+
       <Card className="relative w-full max-w-lg bg-slate-900/90 backdrop-blur-xl border-slate-700/50 shadow-2xl">
         <CardHeader className="text-center pb-6 pt-8">
           <div className="mx-auto w-20 h-20 bg-gradient-to-br from-teal-400/20 to-sky-400/20 rounded-2xl flex items-center justify-center mb-6 shadow-lg">
@@ -112,8 +168,10 @@ const JoinVC: React.FC<JoinVCProps> = ({ onJoinSuccess }) => {
                 id="roomId"
                 type="text"
                 placeholder="Enter the meeting room ID"
-                value={roomId}
-                onChange={(e) => setRoomId(e.target.value)}
+                value={state.roomId || ''}
+                onChange={(e) => {
+                  setState(prev => ({ ...prev, roomId: e.target.value }));
+                }}
                 className="h-12 bg-slate-800/80 border-slate-600/50 text-slate-100 placeholder-slate-500 focus:border-teal-400/60 focus:ring-2 focus:ring-teal-400/20 transition-all duration-200 rounded-xl"
                 disabled={state.isJoining}
                 required

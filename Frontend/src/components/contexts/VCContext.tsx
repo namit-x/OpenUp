@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect, useMemo } from 'react';
 import {
   useHMSActions,
   useHMSStore,
@@ -10,6 +10,7 @@ import {
   selectIsLocalVideoEnabled,
   HMSPeer
 } from '@100mslive/react-sdk';
+import { jwtDecode } from 'jwt-decode';
 
 interface VCState {
   isConnected: boolean;
@@ -34,6 +35,7 @@ interface VCParticipant {
 
 interface VCContextType {
   state: VCState;
+  setState: React.Dispatch<React.SetStateAction<VCState>>;
   joinRoom: (roomId: string, token: string, userName?: string) => Promise<void>;
   leaveRoom: () => void;
   toggleVideo: () => Promise<void>;
@@ -70,9 +72,69 @@ interface VCProviderProps {
 }
 
 export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
-  const [state, setState] = useState<VCState>(initialState);
-
   const hmsActions = useHMSActions();
+
+  // Move loadFromStorage inside the component but before useState
+  const loadFromStorage = (): Partial<VCState> | null => {
+    const saved = localStorage.getItem('vcData');
+    if (!saved) return null;
+
+    try {
+      const parsed = JSON.parse(saved);
+      if (parsed.expiresAt && parsed.expiresAt <= Date.now()) {
+        localStorage.removeItem('vcData');
+        return null;
+      }
+
+      // Extract roomId from token if available
+      if (parsed.token) {
+        try {
+          const decoded: any = jwtDecode(parsed.token);
+          return {
+            ...parsed,
+            roomId: decoded.room_id || parsed.roomId || null
+          };
+        } catch (e) {
+          console.error('Failed to decode token', e);
+          return parsed;
+        }
+      }
+
+      return parsed;
+    } catch (e) {
+      console.error('Failed to parse saved data', e);
+      return null;
+    }
+  };
+
+
+  // Initialize state with saved values first
+  const [state, setState] = useState<VCState>(() => {
+    const saved = loadFromStorage();
+    return {
+      ...initialState,
+      ...saved,
+      // Ensure these are always reset to defaults
+      isJoining: false,
+      error: null,
+      // Special handling for roomId
+      roomId: saved?.roomId || initialState.roomId
+    };
+  });
+
+  useEffect(() => {
+    if (state.token) {
+      try {
+        const decoded: any = jwtDecode(state.token);
+        setState(prev => ({
+          ...prev,
+          roomId: decoded.room_id || prev.roomId
+        }));
+      } catch (e) {
+        console.error('Failed to decode token', e);
+      }
+    }
+  }, [state.token]);
 
   // 100ms selectors
   const roomState = useHMSStore(selectRoomState);
@@ -81,14 +143,14 @@ export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
   const isLocalAudioEnabled = useHMSStore(selectIsLocalAudioEnabled);
   const isLocalVideoEnabled = useHMSStore(selectIsLocalVideoEnabled);
 
-  // Update state based on 100ms store changes
+  // Fixed 100ms update effect - preserves roomId and token
   useEffect(() => {
     setState(prevState => ({
-      ...prevState,
+      ...prevState, // Keep existing state
       roomState,
       isConnected: roomState === HMSRoomState.Connected,
-      isVideoEnabled: isLocalVideoEnabled,
-      isAudioEnabled: isLocalAudioEnabled,
+      isVideoEnabled: isLocalVideoEnabled ?? prevState.isVideoEnabled,
+      isAudioEnabled: isLocalAudioEnabled ?? prevState.isAudioEnabled,
       participants: peers.filter(peer => peer.id !== localPeer?.id).map(peer => ({
         id: peer.id,
         name: peer.name,
@@ -99,22 +161,25 @@ export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
     }));
   }, [roomState, localPeer, peers, isLocalAudioEnabled, isLocalVideoEnabled]);
 
+  // Stable setToken that won't recreate on rerenders
   const setToken = useCallback((token: string) => {
-    setState(prev => ({ ...prev, token }));
-    console.log("Token uploadded: ", token);
+    setState(prev => ({
+      ...prev,
+      token,
+      // Clear error when token updates
+      error: null
+    }));
   }, []);
 
   const joinRoom = useCallback(async (roomId: string, token: string, userName?: string) => {
-    if (!hmsActions) {
-      throw new Error('HMS Actions not initialized');
-    }
-
-    setState(prevState => ({
-      ...prevState,
+    if (!hmsActions) throw new Error('HMS Actions not initialized');
+  
+    setState(prev => ({
+      ...prev,
       isJoining: true,
       error: null,
       roomId,
-      token,
+      token
     }));
 
     try {
@@ -188,15 +253,16 @@ export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
     }));
   }, []);
 
-  const contextValue: VCContextType = {
+  const contextValue = useMemo(() => ({
     state,
+    setState,
     joinRoom,
     leaveRoom,
     toggleVideo,
     toggleAudio,
     setParticipants,
     setToken,
-  };
+  }), [state, joinRoom, leaveRoom, toggleVideo, toggleAudio, setParticipants, setToken]);
 
   return (
     <VCContext.Provider value={contextValue}>
