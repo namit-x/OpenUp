@@ -82,7 +82,7 @@ const TherapistSidebar = () => {
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-teal-400/20 flex items-center justify-center">
             {/* <span className="text-teal-400 font-medium">RS</span> */}
-            <img src="/Doc1.png" alt="RS" className="w-12 h-12 rounded-full object-cover" />
+            <img src="/Doc2.png" alt="RS" className="w-12 h-12 rounded-full object-cover" />
           </div>
           <div>
             <p className="text-sm">{user? `${user.name}` : "Loading..."}</p>

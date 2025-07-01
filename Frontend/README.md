@@ -1,54 +1,60 @@
-# React + TypeScript + Vite
+# 🧠 OpenUp - Talk Freely. Heal Fully.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**OpenUp** is a mental wellness web app that connects users with therapists through real-time video communication. It's built with scalability and accessibility in mind—designed for fully online consultations without the need for physical visits or scheduling hassles.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- 🔐 Secure user authentication (JWT-based)
+- 🧍‍♂️ User-friendly onboarding for patients and therapists
+- 📹 Real-time video calling using 100ms SDK
+- 🗂️ Separate user flows for clients and therapists
+- ☁️ Scalable architecture (ready for cloud deployment)
+- ⚙️ Built with modern technologies for performance and ease of use
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## 🛠 Tech Stack
+
+- **Frontend**: React.js + TypeScript + TailwindCSS  
+- **Backend**: Node.js + Express + MongoDB  
+- **Video SDK**: 100ms  
+- **Authentication**: JWT  
+- **Others**: Zod, React Hook Form, Axios
+
+---
+
+## 📦 Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/openup.git
+cd openup
+
+# Install dependencies
+npm install
+
+# Run the frontend
+cd frontend
+npm run dev
+
+# Run the backend
+cd ../backend
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Make sure to add your .env variables for both backend and 100ms setup.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📷 Sneak Peek
+"A picture is worth a thousand lines of code..."
+| Home Page                             | Patient Home                           |
+|--------------------------------------|----------------------------------------|
+| ![Home](./public/HomePage.png)       | ![Info](./public/PatientHome.png)      |
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+| Schedule Modal                         | Therapist Home                         |
+|--------------------------------------|----------------------------------------|
+| ![Items](./public/ScheduleModal.png)  | ![Cakes](./public/TherapistHome.png)           |
+
+## 🤝 Let's Connect
+Built with purpose by Namit — developer, student, and someone who believes in using tech to make Impact.
