@@ -50,11 +50,11 @@ Make sure to add your .env variables for both backend and 100ms setup.
 "A picture is worth a thousand lines of code..."
 | Home Page                             | Patient Home                           |
 |--------------------------------------|----------------------------------------|
-| ![Home](./public/HomePage.png)       | ![Info](./public/PatientHome.png)      |
+| ![Home](./Frontend/public/HomePage.png)       | ![Info](./Frontend/public/PatientHome.png)      |
 
 | Schedule Modal                         | Therapist Home                         |
 |--------------------------------------|----------------------------------------|
-| ![Items](./public/ScheduleModal.png)  | ![Cakes](./public/TherapistHome.png)           |
+| ![Items](./Frontend/public/ScheduleModal.png)  | ![Cakes](./Frontend/public/TherapistHome.png)           |
 
 ## 🤝 Let's Connect
 Built with purpose by Namit — developer, student, and someone who believes in using tech to make Impact.
