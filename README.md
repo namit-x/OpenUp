@@ -29,7 +29,7 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/openup.git
+git clone https://github.com/namit-x/OpenUp
 cd openup
 
 # Install dependencies
