@@ -4,12 +4,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node dist/server.js",
-    "dev": "ts-node src/server.ts",
-    "build": "tsc",
-    "watch": "tsc --watch"
-  },
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "start": "node dist/server.js",
+  "dev": "tsx src/server.ts",
+  "build": "tsc -p .",
+  "watch": "tsc --watch"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
