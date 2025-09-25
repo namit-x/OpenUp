@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
@@ -30,9 +30,6 @@ app.use(cors({
 app.use(bodyParser.json());
 
 // ✅ REST routes
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello World!');
-});
 app.post('/signup', signup);
 app.post('/signin', login);
 app.post('/logout', logout);
