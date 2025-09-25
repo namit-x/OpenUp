@@ -107,7 +107,6 @@ export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
     }
   };
 
-
   // Initialize state with saved values first
   const [state, setState] = useState<VCState>(() => {
     const saved = loadFromStorage();

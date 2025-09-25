@@ -57,6 +57,7 @@ const appointments = () => {
           credentials: 'include',
         });
         let data = await res.json();
+        console.log(data)
 
         if (res.ok) {
           setTokenFormed(true);

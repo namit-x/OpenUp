@@ -15,6 +15,7 @@ import { useVC } from '../contexts/VCContext';
 import { useToast } from '../../hooks/use-toast';
 import { use100msStore } from '../../hooks/use100msStore';
 import { selectVideoTrackByID, useHMSActions, useHMSStore } from '@100mslive/react-sdk';
+import { useNavigate } from 'react-router';
 
 interface RoomVCProps {
   onLeaveRoom: () => void;
@@ -36,10 +37,12 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
   } = use100msStore();
 
   const localVideoRef = useRef<HTMLVideoElement>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleBeforeUnload = async () => {
       await leaveRoom();
+      navigate('/')
     };
   
     window.addEventListener("beforeunload", handleBeforeUnload);
