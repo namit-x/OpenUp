@@ -61,7 +61,7 @@ export const TherapistSignUpForm: React.FC<TherapistSignUpFormProps> = ({ onBack
 
     try {
       setLoading(true);
-      let res = await fetch('http://localhost:5000/signup', {
+      let res = await fetch(`${import.meta.env.VITE_BACKEND}/signup`, {
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify(formData),

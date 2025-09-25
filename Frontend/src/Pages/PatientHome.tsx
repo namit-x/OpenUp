@@ -49,7 +49,7 @@ const PatientHome = () => {
 
   useEffect(() => {
     const fetchPatientPhone = async () => {
-      let res = await fetch('http://localhost:5000/details', {
+      let res = await fetch(`${import.meta.env.VITE_BACKEND}/details`, {
         method: 'POST',
         credentials: 'include',
       });

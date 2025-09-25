@@ -16,6 +16,8 @@ interface BookingModalProps {
   dateTabs: string[];
 }
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND;
+
 const BookingModal: React.FC<BookingModalProps> = ({
   isOpen,
   onClose,
@@ -29,29 +31,29 @@ const BookingModal: React.FC<BookingModalProps> = ({
   const [selectedDate, setSelectedDate] = useState<string>("Today");
   const { toast } = useToast();
 
-  const convertISOTo12Hour = (isoTime: string): string => {
-    const [hoursStr, minutesStr] = isoTime.split(":");
-    let hours = parseInt(hoursStr, 10);
-    const minutes = parseInt(minutesStr, 10);
+  // const convertISOTo12Hour = (isoTime: string): string => {
+  //   const [hoursStr, minutesStr] = isoTime.split(":");
+  //   let hours = parseInt(hoursStr, 10);
+  //   const minutes = parseInt(minutesStr, 10);
 
-    const modifier = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12 || 12;
+  //   const modifier = hours >= 12 ? "PM" : "AM";
+  //   hours = hours % 12 || 12;
 
-    return `${hours}:${minutes.toString().padStart(2, "0")} ${modifier}`;
-  };
+  //   return `${hours}:${minutes.toString().padStart(2, "0")} ${modifier}`;
+  // };
 
-  const convert12HourToISO = (time12h: string): string => {
-    const [time, modifier] = time12h.trim().split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
+  // const convert12HourToISO = (time12h: string): string => {
+  //   const [time, modifier] = time12h.trim().split(" ");
+  //   let [hours, minutes] = time.split(":").map(Number);
 
-    if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
-    if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
+  //   if (modifier.toLowerCase() === "pm" && hours !== 12) hours += 12;
+  //   if (modifier.toLowerCase() === "am" && hours === 12) hours = 0;
 
-    const isoHours = hours.toString().padStart(2, "0");
-    const isoMinutes = minutes.toString().padStart(2, "0");
+  //   const isoHours = hours.toString().padStart(2, "0");
+  //   const isoMinutes = minutes.toString().padStart(2, "0");
 
-    return `${isoHours}:${isoMinutes}`;
-  };
+  //   return `${isoHours}:${isoMinutes}`;
+  // };
 
   // Sample time slots - I need to fetch these from an API in a real app
   const timeSlots = [
@@ -59,7 +61,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
   ];
 
   const bookSession = async () => {
-    let res= await fetch('http://localhost:5000/bookSession', {
+    let res = await fetch(`${BACKEND_URL}/bookSession`, {
       method: 'POST',
       headers: {
         "Content-Type" : "application/json",

@@ -7,6 +7,8 @@ import { Eye, EyeOff, ArrowLeft, Phone, Lock } from 'lucide-react';
 import { useToast } from "../../hooks/use-toast";
 import { useNavigate } from 'react-router';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND;
+
 interface PatientSignInFormProps {
   onBack: () => void;
 }
@@ -33,7 +35,7 @@ export const PatientSignInForm: React.FC<PatientSignInFormProps> = ({ onBack }) 
     const verifyDetails = async (data: loginData) => {
       try {
     
-        let res = await fetch('http://localhost:5000/signin', {
+        let res = await fetch(`${BACKEND_URL}/signin`, {
           method: 'POST',
         body: JSON.stringify(data),
         credentials: 'include',

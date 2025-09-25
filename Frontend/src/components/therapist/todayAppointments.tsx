@@ -31,7 +31,7 @@ const appointments = () => {
   useEffect(() => {
     const fetchSession = async () => {
       const details = await fetchDetails();
-      let res = await fetch('http://localhost:5000/fetchTodaysSessions', {
+      let res = await fetch(`${import.meta.env.VITE_BACKEND}/fetchTodaysSessions`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"
@@ -48,7 +48,7 @@ const appointments = () => {
   const handleJoin = async (pid: string) => {
     if (!tokenFormed) {
       try {
-        const res = await fetch('http://localhost:5000/generate-token', {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND}/generate-token`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -77,7 +77,7 @@ const appointments = () => {
   }
 
   const joinMeeting = async () => {
-    let res = await fetch('http://localhost:5000/get-token', {
+    let res = await fetch(`${import.meta.env.VITE_BACKEND}/get-token`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json"

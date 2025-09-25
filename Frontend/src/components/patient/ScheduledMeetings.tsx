@@ -5,6 +5,8 @@ import { Calendar, Clock, Video, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useVC } from '../contexts/VCContext';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND
+
 interface Meeting {
   id: string;
   therapistName: string;
@@ -24,7 +26,7 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
 
   useEffect(() => {
     const fetchMeetings = async () => {
-      let res = await fetch('http://localhost:5000/fetchScheduledMeetings', {
+      let res = await fetch(`${BACKEND_URL}/fetchScheduledMeetings`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"
@@ -39,7 +41,7 @@ const ScheduledMeetings: React.FC<ScheduledMeetingsProps> = () => {
 
   const handleJoinMeeting = async () => {
     console.log('Is it even triggerring?');
-    let res = await fetch('http://localhost:5000/get-token', {
+    let res = await fetch(`${BACKEND_URL}/get-token`, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json"

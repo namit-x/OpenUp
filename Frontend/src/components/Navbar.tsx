@@ -3,6 +3,8 @@ import { Button } from '../components/ui/Button';
 import { LogOut, Menu, Phone, User, UserCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND
+
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,7 +14,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const verify = async () => {
-      const res = await fetch('http://localhost:5000/details', {
+      let res = await fetch(`${BACKEND_URL}/details`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"
@@ -55,7 +57,7 @@ const Navbar = () => {
   };
 
   const handleCookieDelete = async () => {
-    let res = await fetch("http://localhost:5000/logout", {
+    let res = await fetch(`${BACKEND_URL}/logout`, {
       method: 'POST',
       credentials: "include",
     });

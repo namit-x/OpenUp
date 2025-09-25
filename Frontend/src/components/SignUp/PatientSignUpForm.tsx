@@ -14,6 +14,8 @@ import { cn } from '../../lib/utils';
 import { useNavigate } from 'react-router';
 import { useToast } from "../../hooks/use-toast";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND
+
 interface PatientSignUpFormProps {
   onBack: () => void;
 }
@@ -36,7 +38,7 @@ export const PatientSignUpForm: React.FC<PatientSignUpFormProps> = ({ onBack }) 
 
   const createAccount = async (data: PatientData) => {
     console.log("data: ", data);
-    let res = await fetch('http://localhost:5000/signup', {
+    let res = await fetch(`${BACKEND_URL}/signup`, {
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify(data),

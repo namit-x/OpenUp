@@ -3,9 +3,11 @@ import { motion } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Eye, EyeOff, ArrowLeft, Mail, Lock, Phone } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, Lock, Phone } from 'lucide-react';
 import { useToast } from '../ui/use-toast';
 import { useNavigate } from 'react-router';
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND
 
 interface TherapistSignInFormProps {
   onBack: () => void;
@@ -19,7 +21,7 @@ interface loginData {
 }
 
 const verifyDetails = async (data: loginData) => {
-  let res = await fetch('http://localhost:5000/signin', {
+  let res = await fetch(`${BACKEND_URL}/signin`, {
     method: 'POST',
     body: JSON.stringify(data),
     credentials: 'include',
