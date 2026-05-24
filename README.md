@@ -21,7 +21,7 @@
 - **Backend**: Node.js + Express + MongoDB  
 - **Video SDK**: 100ms  
 - **Authentication**: JWT  
-- **Others**: Zod, React Hook Form, Axios
+- **Others**: Zod, React Hook Form, REST APIs
 
 ---
 
