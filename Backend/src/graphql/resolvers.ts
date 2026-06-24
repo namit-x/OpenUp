@@ -1,8 +1,8 @@
-import User from "../src/models/User.js";
+import User from "../models/User.js";
 
 export const resolvers = {
   Query: {
-    getTherapists: async (_:any, args: {role?: String}) => {
+    getTherapists: async (_: any, args: { role?: String }) => {
 
       const filter: any = {};
       if (args.role) filter.role = args.role;
@@ -18,7 +18,7 @@ export const resolvers = {
         languages: t.languages || [],
         availableVia: t.availableVia || [],
         nextSlot: t.nextSlot || "",
-        role:t.role,
+        role: t.role,
       }));
     },
   },

@@ -21,7 +21,9 @@
     "declaration": true,
     "declarationMap": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
   "resolutions": {
     "@types/express": "^4.17.21"
@@ -32,6 +34,7 @@
     "src/types/**/*"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist"
   ]
 }

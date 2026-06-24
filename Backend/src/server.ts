@@ -5,8 +5,8 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
-import { typeDefs } from '../graphql/typeDefs.js';
-import { resolvers } from '../graphql/resolvers.js';
+import { typeDefs } from './graphql/typeDefs.js';
+import { resolvers } from './graphql/resolvers.js';
 
 import connectDB from './controllers/DBController.js';
 import { login, logout, signup } from './controllers/AuthControllers.js';
@@ -35,8 +35,8 @@ app.post('/signin', login);
 app.post('/logout', logout);
 app.post('/details', verifyToken, details);
 app.post('/therapistData', verifyToken, therapistData);
-app.post('/bookSession',verifyToken, bookSession);
-app.post('/fetchTodaysSessions',verifyToken, fetchTodaysSessions);
+app.post('/bookSession', verifyToken, bookSession);
+app.post('/fetchTodaysSessions', verifyToken, fetchTodaysSessions);
 app.post('/generate-token', verifyToken, (req, res) =>
   createRoom(req as unknown as AuthenticatedRequest, res)
 );

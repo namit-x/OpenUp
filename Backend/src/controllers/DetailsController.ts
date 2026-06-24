@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
+import User from '../models/User.js';
 
 interface AuthRequest extends Request {
   user?: any; // Adding a custom 'user' field

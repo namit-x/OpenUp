@@ -4,7 +4,11 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
+interface CustomRequest extends Request {
+  user?: string | JwtPayload;
+}
+
+export const verifyToken = (req: CustomRequest, res: Response, next: NextFunction): void => {
   const token = req.cookies?.TAuthToken || req.cookies?.PAuthToken;
 
 
