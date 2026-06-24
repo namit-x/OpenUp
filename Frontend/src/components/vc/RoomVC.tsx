@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Card, CardContent } from '../ui/card';
 import { Button } from '../ui/Button';
 import {
@@ -14,14 +14,14 @@ import {
 import { useVC } from '../contexts/VCContext';
 import { useToast } from '../../hooks/use-toast';
 import { use100msStore } from '../../hooks/use100msStore';
-import { selectVideoTrackByID, useHMSActions, useHMSStore } from '@100mslive/react-sdk';
+import { selectTrackByID, useHMSActions, useHMSStore } from '@100mslive/react-sdk';
 import { useNavigate } from 'react-router';
 
 interface RoomVCProps {
   onLeaveRoom: () => void;
 }
 
-const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
+const RoomVC = ({ onLeaveRoom }: RoomVCProps) => {
   const { state, leaveRoom, toggleVideo, toggleAudio } = useVC();
   const { toast } = useToast();
   const hmsActions = useHMSActions();
@@ -29,10 +29,8 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
     localPeer,
     peers,
     localVideoTrack,
-    localVideoTrackID,
     isLocalAudioEnabled,
     isLocalVideoEnabled,
-    getVideoTrack,
     isTrackEnabled
   } = use100msStore();
 
@@ -44,24 +42,26 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
       await leaveRoom();
       navigate('/')
     };
-  
+
     window.addEventListener("beforeunload", handleBeforeUnload);
-  
+
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [leaveRoom]);
+  }, [leaveRoom, navigate]);
 
   useEffect(() => {
     navigator.permissions.query({ name: 'camera' as any })
-      .then(status => console.log('Camera permission:', status.state));
+      .then(status => console.log('Camera permission:', status.state))
+      .catch(err => console.error('Permission check failed:', err));
   }, []);
 
   useEffect(() => {
     navigator.mediaDevices.enumerateDevices()
       .then(devices => {
         console.log('Available devices:', devices.filter(d => d.kind === 'videoinput'));
-      });
+      })
+      .catch(err => console.error('Device enumeration failed:', err));
   }, []);
 
   useEffect(() => {
@@ -85,7 +85,6 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
       state: localVideoTrack?.state
     });
   }, [localVideoTrack]);
-
 
   const handleLeaveRoom = async () => {
     try {
@@ -239,17 +238,22 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
             .filter(p => p.id !== localPeer?.id) // 🔥 Prevents double render
             .slice(0, 3)
             .map((peer) => {
-              const videoTrack = peer.videoTrack ? useHMSStore(selectVideoTrackByID(peer.videoTrack)) : null;
-              const hasVideo = videoTrack?.enabled;
+              // Get the actual track objects using track IDs
+              const videoTrackObj = useHMSStore(selectTrackByID(peer.videoTrack));
+              const audioTrackObj = useHMSStore(selectTrackByID(peer.audioTrack));
+
+              const hasVideo = !!videoTrackObj && videoTrackObj.enabled;
+              const isAudioEnabled = audioTrackObj ? isTrackEnabled(audioTrackObj) : false;
 
               return (
                 <Card key={peer.id} className="bg-[#1e293b] border-gray-700 relative overflow-hidden">
                   <CardContent className="p-0 aspect-video">
-                    {hasVideo && videoTrack ? (
+                    {hasVideo && videoTrackObj ? (
                       <video
                         ref={(videoEl) => {
-                          if (videoEl && videoTrack) {
-                            hmsActions.attachVideo(videoTrack, videoEl);
+                          if (videoEl && videoTrackObj) {
+                            // Pass track ID, not the track object
+                            hmsActions.attachVideo(videoTrackObj.id, videoEl);
                           }
                         }}
                         autoPlay
@@ -281,7 +285,7 @@ const RoomVC: React.FC<RoomVCProps> = ({ onLeaveRoom }) => {
                           <VideoOff className="h-3 w-3 text-white" />
                         </div>
                       )}
-                      {!isTrackEnabled(peer.audioTrack) && (
+                      {!isAudioEnabled && (
                         <div className="bg-red-500 p-1 rounded">
                           <MicOff className="h-3 w-3 text-white" />
                         </div>

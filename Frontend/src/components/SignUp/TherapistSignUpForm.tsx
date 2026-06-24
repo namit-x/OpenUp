@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router';
-import { toast } from 'sonner';
 
 // Component props interface
 interface TherapistSignUpFormProps {

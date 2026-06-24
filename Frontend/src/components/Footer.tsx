@@ -1,4 +1,4 @@
-import { Heart, Mail, Phone, Linkedin, Instagram, Twitter } from 'lucide-react';
+import { Mail, Phone, Linkedin, Instagram, Twitter } from 'lucide-react';
 import { Separator } from './ui/Separator';
 import { Button } from '../components/ui/Button';
 

@@ -1,7 +1,7 @@
 // it will be used inside WhyOpenUp.tsx
 import { Blocks as LucideBlocks, Brain, HeartPlus, CalendarClock, LucideIcon } from 'lucide-react';
 
-interface BlockInt {
+export interface BlockInt {
   title: string;
   description: string;
   icon: LucideIcon;

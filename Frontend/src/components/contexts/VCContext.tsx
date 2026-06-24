@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect, useMemo } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
+import type { ReactNode } from "react";
 import {
   useHMSActions,
   useHMSStore,
@@ -71,7 +72,7 @@ interface VCProviderProps {
   children: ReactNode;
 }
 
-export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
+export const VCProvider = ({ children }: VCProviderProps) => {
   const hmsActions = useHMSActions();
 
   // Move loadFromStorage inside the component but before useState
@@ -153,8 +154,8 @@ export const VCProvider: React.FC<VCProviderProps> = ({ children }) => {
       participants: peers.filter(peer => peer.id !== localPeer?.id).map(peer => ({
         id: peer.id,
         name: peer.name,
-        isVideoEnabled: peer.videoTrack?.enabled || false,
-        isAudioEnabled: peer.audioTrack?.enabled || false,
+        isVideoEnabled: !!peer.videoTrack,
+        isAudioEnabled: !!peer.audioTrack,
         peer,
       })),
     }));

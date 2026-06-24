@@ -56,7 +56,7 @@ export class VCService {
       } else {
         // Getting current state from store
         const localPeer = useHMSStore(selectLocalPeer);
-        const currentState = localPeer?.audioTrack?.enabled ?? false;
+        const currentState = localPeer?.audioTrack ?? false;
         await this.hmsActions.setLocalAudioEnabled(!currentState);
       }
       console.log('Audio toggled');
@@ -74,7 +74,7 @@ export class VCService {
       } else {
         // Getting current state from store
         const localPeer = useHMSStore(selectLocalPeer);
-        const currentState = localPeer?.videoTrack?.enabled ?? false;
+        const currentState = localPeer?.videoTrack ?? false;
         await this.hmsActions.setLocalVideoEnabled(!currentState);
       }
       console.log('Video toggled');
