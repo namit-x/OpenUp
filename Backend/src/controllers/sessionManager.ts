@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
-import Session from '../models/Session'
-import { AuthenticatedRequest } from '../controllers/VCControllers'
+import User from '../models/User.js';
+import Session from '../models/Session.js'
+import { AuthenticatedRequest } from '../controllers/VCControllers.js'
 
 export interface SessionInt {
   patientId: string;
@@ -85,7 +85,6 @@ const isToday = (dateStr: string) => {
   const today = new Date();
 
   return (
-    parsedDate.getFullYear() === today.getFullYear() &&
     parsedDate.getMonth() === today.getMonth() &&
     parsedDate.getDate() === today.getDate()
   );
@@ -93,10 +92,12 @@ const isToday = (dateStr: string) => {
 
 export const fetchTodaysSessions = async (req: AuthenticatedRequest, res: Response) => {
   const id = req.user.id;
+  console.log("user: ", req.user);
   const sessions = await fetchAllSessions(id);
   let todaySessions = [];
   for (let i = 0; i < sessions.length; i++) {
     if (isToday(sessions[i].scheduledDay)) {
+      console.log(sessions[i]);
       todaySessions.push(sessions[i]);
     }
   }

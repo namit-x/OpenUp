@@ -2,8 +2,8 @@ import jwt, { SignOptions } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { Request, Response as ExpressResponse } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { storeToken } from '../controllers/tokenStorage'
-import { jwtDecode } from 'jwt-decode'
+import { storeToken } from '../controllers/tokenStorage.js'
+// import { jwtDecode } from 'jwt-decode'
 
 dotenv.config();
 const templateId = process.env.Template_Id;
@@ -36,6 +36,7 @@ const generateManagementToken = () => {
 
 export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse) => {
   try {
+    console.log("Faa");
     const managementToken = generateManagementToken();
     const response = await fetch('https://api.100ms.live/v2/rooms', {
       method: 'POST',

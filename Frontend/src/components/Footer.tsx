@@ -1,5 +1,5 @@
 import { Heart, Mail, Phone, Linkedin, Instagram, Twitter } from 'lucide-react';
-import { Separator } from './ui/separator';
+import { Separator } from './ui/Separator';
 import { Button } from '../components/ui/Button';
 
 const Footer = () => {

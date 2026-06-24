@@ -5,17 +5,17 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServer } from '@apollo/server';
-import { typeDefs } from '../graphql/typeDefs';
-import { resolvers } from '../graphql/resolvers';
+import { typeDefs } from '../graphql/typeDefs.js';
+import { resolvers } from '../graphql/resolvers.js';
 
-import connectDB from './controllers/DBController';
-import { login, logout, signup } from './controllers/AuthControllers';
-import { details } from './controllers/DetailsController';
-import { verifyToken } from './controllers/AuthMiddleware';
-import { therapistData } from './controllers/TherapistDataController';
-import { bookSession, fetchTodaysSessions, fetchPatientSessions } from './controllers/sessionManager';
-import { createRoom, AuthenticatedRequest } from './controllers/VCControllers'
-import { getStoredToken } from './controllers/token';
+import connectDB from './controllers/DBController.js';
+import { login, logout, signup } from './controllers/AuthControllers.js';
+import { details } from './controllers/DetailsController.js';
+import { verifyToken } from './controllers/AuthMiddleware.js';
+import { therapistData } from './controllers/TherapistDataController.js';
+import { bookSession, fetchTodaysSessions, fetchPatientSessions } from './controllers/sessionManager.js';
+import { createRoom, AuthenticatedRequest } from './controllers/VCControllers.js'
+import { getStoredToken } from './controllers/token.js';
 
 dotenv.config();
 connectDB();

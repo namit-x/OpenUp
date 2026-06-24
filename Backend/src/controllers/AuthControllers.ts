@@ -89,7 +89,7 @@ export const login = async (req: Request, res: Response) => {
         role: exists.role,
         id: exists._id,
       }
-      const secretKey = process.env.Secret_Key as string;
+      const secretKey = process.env.SECRET_KEY as string;
       if (!secretKey) {
         console.log('Sceret key is empty');
       }

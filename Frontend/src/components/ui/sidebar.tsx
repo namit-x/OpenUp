@@ -7,7 +7,7 @@ import { useIsMobile } from "../../hooks/use-mobile"
 import { cn } from "../../lib/utils"
 import { Button } from "../ui/Button"
 import { Input } from "../ui/input"
-import { Separator } from "../ui/separator"
+import { Separator } from "../ui/Separator"
 import { Sheet, SheetContent } from "./sheet"
 import { Skeleton } from "./skeleton"
 import {

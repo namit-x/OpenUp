@@ -33,7 +33,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   };
 
   // Generate years from 1900 to current year + 20
-  const years = Array.from({ length: 60 }, (_, i) => 2025 - i);
+  const years = Array.from({ length: 60 }, (_, i) => 2030 - i);
 
   return (
     <div className="bg-gray-900 text-white p-6 rounded-lg w-max mx-auto">
