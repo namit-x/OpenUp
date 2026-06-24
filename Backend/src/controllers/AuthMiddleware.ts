@@ -7,6 +7,7 @@ dotenv.config();
 export const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
   const token = req.cookies?.TAuthToken || req.cookies?.PAuthToken;
 
+
   if (!token) {
     res.status(403).json({ error: "cookie not found" });
     return;

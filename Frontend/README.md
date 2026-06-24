@@ -29,8 +29,8 @@
 
 ```bash
 # Clone the repo
-git clone https://github.com/yourusername/openup.git
-cd openup
+git clone https://github.com/namit-x/OpenUp
+cd OpenUp
 
 # Install dependencies
 npm install

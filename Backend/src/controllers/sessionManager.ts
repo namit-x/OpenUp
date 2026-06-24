@@ -92,12 +92,10 @@ const isToday = (dateStr: string) => {
 
 export const fetchTodaysSessions = async (req: AuthenticatedRequest, res: Response) => {
   const id = req.user.id;
-  console.log("user: ", req.user);
   const sessions = await fetchAllSessions(id);
   let todaySessions = [];
   for (let i = 0; i < sessions.length; i++) {
     if (isToday(sessions[i].scheduledDay)) {
-      console.log(sessions[i]);
       todaySessions.push(sessions[i]);
     }
   }

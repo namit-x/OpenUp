@@ -1,6 +1,6 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../controllers/VCControllers'
-import { getToken } from './tokenStorage'
+import { AuthenticatedRequest } from '../controllers/VCControllers.js'
+import { getToken } from './tokenStorage.js'
 
 export const getStoredToken = async (req: AuthenticatedRequest, res: Response) => {
   let data = await getToken(req.user.id)

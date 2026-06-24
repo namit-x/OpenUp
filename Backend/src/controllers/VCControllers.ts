@@ -36,7 +36,6 @@ const generateManagementToken = () => {
 
 export const createRoom = async (req: AuthenticatedRequest, res: ExpressResponse) => {
   try {
-    console.log("Faa");
     const managementToken = generateManagementToken();
     const response = await fetch('https://api.100ms.live/v2/rooms', {
       method: 'POST',

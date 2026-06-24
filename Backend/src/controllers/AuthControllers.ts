@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import User from "../models/User";
+import User from "../models/User.js";
 import argon2 from 'argon2';
-import { patientSignupSchema, therapistSignupSchema } from "../validators/SignupSchema";
+import { patientSignupSchema, therapistSignupSchema } from "../validators/SignupSchema.js";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
@@ -70,6 +70,8 @@ export const signup = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const data: loginData = req.body;
+  console.log("hle")
+
 
   let exists = await User.findOne({ phone: data.phone }).exec();
 
@@ -96,6 +98,7 @@ export const login = async (req: Request, res: Response) => {
       const token = jwt.sign(payload, secretKey, { expiresIn: "15D" });
 
       if (exists.role === 'therapist') {
+        console.log("Exists");
         res.cookie('TAuthToken', token, {
           httpOnly: true,
           secure: true,
