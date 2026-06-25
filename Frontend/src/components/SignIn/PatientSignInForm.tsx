@@ -8,6 +8,7 @@ import { useToast } from "../../hooks/use-toast";
 import { useNavigate } from 'react-router';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND;
+console.log("BACKEND_URL =", BACKEND_URL);
 
 interface PatientSignInFormProps {
   onBack: () => void;

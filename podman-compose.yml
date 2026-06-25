@@ -1,0 +1,18 @@
+services:
+  backend:
+    image: localhost/openup-backend:latest
+    container_name: openup-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./Backend/.env
+    restart: unless-stopped
+
+  frontend:
+    image: localhost/openup-frontend:latest
+    container_name: openup-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
